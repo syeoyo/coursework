@@ -1,4 +1,4 @@
-# coursework
+# graduate coursework
 
 This repository contains coursework from my graduate studies at Yonsei University.
 
