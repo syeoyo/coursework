@@ -1,0 +1,51 @@
+\documentclass[10pt]{article}
+\usepackage{fontspec}
+\setmainfont{IBM Plex Sans}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=0.5in}
+\usepackage{mathtools}
+\usepackage{lscape}
+\usepackage{graphicx}
+\usepackage{enumitem}
+
+\title{Homework 03}
+\author{Seohyun Jang}
+
+\begin{document}
+
+\maketitle
+
+\section{Problem 3.1 (Risk-Neutral SLP with Recourse)}
+\subsection{(a)}
+The recourse problem can be formulated as the following:
+\begin{subequations}
+    \begin{align}
+        \text{max} \quad & \sum_{t\in T}\left(P_t^{DA}x_{it} + \mathbb{E}\left[P_t^{RT}(\xi)y_{it}^{+}(\xi) - P_t^{PN}y_{it}^{-}(\xi)\right]\right) &\\
+        \text{s.t.} \quad & R_{it}(\xi) - x_{it} = y_{it}^{+}(\xi) - y_{it}^{-}(\xi) \quad  \forall t \in T &\\
+        & R_{it}(\xi) \geq y^+_{it}(\xi) \quad \forall t \in T &\\
+        & y_{it}^{+}(\xi) \leq M z_{it}(\xi), \quad y_{it}^{-}(\xi) \leq M (1 - z_{it}(\xi)) \quad \forall t \in T &\\
+        & x_{it}^{DA} \geq 0, y_{it}^{+}(\xi) \geq 0, y_{it}^{-}(\xi) \geq 0, z_{it}(\xi) \in \{0, 1\} \quad \forall t \in T
+    \end{align}
+    \end{subequations}
+\subsection{(b)}
+
+\section{Problem 3.2 (Deterministic Models)}
+\subsection{(a)}
+\subsection{(b)}
+\subsection{(c)}
+\subsection{(d)}
+
+\section{Problem 3.3 (Excess Probability)}
+
+\section{Problem 3.4 (Conditional Value-at-Risk)}
+
+\section{Problem 3.5 (Expected Excess)}
+
+\section{Problem 3.6 (Probabilistically Constrained SP)}
+
+\section{Problem 3.7 (Quantile Deviation)}
+
+\section{Problem 3.11 (Risk Measure)}
+
+\end{document}
