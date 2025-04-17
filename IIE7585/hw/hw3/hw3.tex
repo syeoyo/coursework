@@ -1,0 +1,572 @@
+\documentclass[7pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=0.7in}
+\usepackage{mathtools}
+\usepackage{lscape}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{multicol}
+\usepackage{booktabs}
+
+
+\begin{document}
+\vspace*{-2em}
+
+\begin{center}
+    \LARGE Homework 03
+\end{center}
+\vspace{1em}
+
+\small{Consider the problem of monthly production planning under demand uncertainty
+    for a manufacturer that produces three products: \textit{Product-a},
+    \textit{Product-b}, and \textit{Product-c}. The manufacture of each of these
+    products requires raw material, \textit{Material-abc}, and three manufacturing
+    processes: \textit{Process-1}, \textit{Process-2}, and \textit{Process-3}. The
+    production process uses machines for each process and thus takes time
+    and incurs costs. In this setting involving demand uncertainty, the materials
+    and/or products and the processing time have to be acquired/manufactured
+    \textit{before} product demand becomes known. In other words, the resource
+    acquisition decisions have to be made here-and-now before demand is realized.
+    The amounts of each resource needed, cost, and maximum amount that can be
+    acquired to make each of the products are given in Table 1. The
+    table also shows the \textit{testing and inspection cost} for each product
+    after it is made and the planned demand amounts that are used in a
+    deterministic setting.}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+    \subsubsection*{First-stage Decision Variables:}
+    \vspace{-0.5em}
+    \small
+    \begin{itemize}[leftmargin=*, noitemsep]
+        \item $x_1$: Number of units of material acquired.
+        \item $x_2$: Number of Process-1 hours acquired.
+        \item $x_3$: Number of Process-2 hours acquired.
+        \item $x_4$: Number of Process-3 hours acquired.
+    \end{itemize}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \subsubsection*{Second-stage Decision Variables:}
+    \vspace{-0.5em}
+    \small
+    \begin{itemize}[leftmargin=*, noitemsep]
+        \item $y_1$: Number of Product-a produced.
+        \item $y_2$: Number of Product-b produced.
+        \item $y_3$: Number of Product-c produced.
+    \end{itemize}
+\end{minipage}
+
+\vspace{0.2em}
+\subsubsection*{Deterministic Parameters:}
+\vspace{-1.7em}
+\begin{multicols}{2}
+    \small
+    \begin{itemize}[leftmargin=1.5em, labelsep=0.3em, noitemsep]
+        \item $m_a$: Units of Material-abc needed to produce a unit of Product-a.
+        \item $m_b$: Units of Material-abc needed to produce a unit of Product-b.
+        \item $m_c$: Units of Material-abc needed to produce a unit of Product-c.
+        \item $m$: Units of Material-abc available.
+        \item $c_1$: Cost of Material-abc (\$/unit).
+        \item $h_{1a}$: Hours of Process-1 needed to produce a unit of Product-a.
+        \item $h_{1b}$: Hours of Process-1 needed to produce a unit of Product-b.
+        \item $h_{1c}$: Hours of Process-1 needed to produce a unit of Product-c.
+        \item $h_{2a}$: Hours of Process-2 needed to produce a unit of Product-a.
+        \item $h_{2b}$: Hours of Process-2 needed to produce a unit of Product-b.
+        \item $h_{2c}$: Hours of Process-2 needed to produce a unit of Product-c.
+        \item $h_{3a}$: Hours of Process-3 needed to produce a unit of Product-a.
+        \item $h_{3b}$: Hours of Process-3 needed to produce a unit of Product-b.
+        \item $h_{3c}$: Hours of Process-3 needed to produce a unit of Product-c.
+        \item $h_1$: Hours of Process-1 available.
+        \item $h_2$: Hours of Process-2 available.
+        \item $h_3$: Hours of Process-3 available.
+        \item $c_2$: Unit cost of hours for Process-1.
+        \item $c_3$: Unit cost of hours for Process-2.
+        \item $c_4$: Unit cost of hours for Process-3.
+        \item $H$: Total hours available for all processes.
+        \item $t_a$: Testing and inspection cost for Product-a (\$ unit).
+        \item $t_b$: Testing and inspection cost for Product-b (\$ unit).
+        \item $t_c$: Testing and inspection cost for Product-c (\$ unit).
+    \end{itemize}
+\end{multicols}
+
+\begin{table}[h!]
+    \footnotesize
+    \captionsetup{skip=3pt}
+    \centering
+    \caption{Monthly resource requirements for \textit{abc}-PPP}
+    \begin{tabular}{|l|c|c|c|c|c|}
+        \hline
+        Item                             & Product-a & Product-b & Product-c & Unit cost (\$) & Available \\
+        \hline
+        Material-abc (units)             & 6         & 8         & 10        & 50             & 300       \\
+        Process-1 (hrs.)                 & 20        & 25        & 28        & 30             & 700       \\
+        Process-2 (hrs.)                 & 12        & 15        & 18        & 15             & 600       \\
+        Process-3 (hrs.)                 & 8         & 10        & 14        & 10             & 500       \\
+        \hline
+        Total time available (hrs.)      &           &           &           &                & 1600      \\
+        \hline
+        Testing and inspection cost (\$) & 50        & 75        & 100       &                &           \\
+        Planned demand (number)          & 23        & 18        & 20        &                &           \\
+        Selling price (\$)               & 1200      & 1600      & 2000      &                &           \\
+        \hline
+    \end{tabular}
+\end{table}
+\subsubsection*{Stochastic Parameters:}
+\vspace{-0.5em}
+\begin{itemize}[leftmargin=1.5em, labelsep=0.5em]
+    \item $d_a(\omega)$: Demand for Product-a (units).
+    \item $d_b(\omega)$: Demand for Product-b (units).
+    \item $d_c(\omega)$: Demand for Product-c (units).
+\end{itemize}
+
+\vspace{0.2em}
+
+\begin{table}[h!]
+    \footnotesize
+    \captionsetup{skip=3pt}
+    \centering
+    \caption{Product demand scenarios}
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        $s$ & Scenario $\omega^s$ & Demand $(d_a(\omega^s), d_b(\omega^s), d_c(\omega^s))$ & Probability $p(\omega^s)$ & Description       \\
+        \hline
+        1   & $\omega^1$          & (15, 10, 5)                                            & 0.10                      & \textit{Low}      \\
+        2   & $\omega^2$          & (20, 15, 15)                                           & 0.30                      & \textit{Moderate} \\
+        3   & $\omega^3$          & (25, 20, 25)                                           & 0.30                      & \textit{High}     \\
+        4   & $\omega^4$          & (30, 25, 30)                                           & 0.20                      & \textit{Extreme}  \\
+        5   & $\omega^5$          & (10, 10, 10)                                           & 0.10                      & \textit{Rare}     \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\section{Problem 3.1 (Risk-Neutral SLP with Recourse)}
+\subsection*{(a)}
+
+\begin{align*}
+    z_{RP}^* := \max \quad
+     & \sum_{s \in \mathcal{S}} p^s \left(1150y_1^s + 1525y_2^s + 1900 y_3^s \right)
+    - \left(50 x_1 + 30 x_2 + 15 x_3 + 10 x_4 \right)                                                               \\
+    \text{s.t.} \quad
+     & -x_1 \geq -300                                                                                               \\
+     & -x_2 \geq -700                                                                                               \\
+     & -x_3 \geq -600                                                                                               \\
+     & -x_4 \geq -500                                                                                               \\
+     & -x_2 - x_3 - x_4 \geq -1600                                                                                  \\
+     & x_1 - 6 y_1^s - 8 y_2^s - 10 y_3^s \geq 0 \quad                               &  & \forall s \in \mathcal{S} \\
+     & x_2 - 20 y_1^s - 25 y_2^s - 28 y_3^s \geq 0 \quad                             &  & \forall s \in \mathcal{S} \\
+     & x_3 - 12 y_1^s - 15 y_2^s - 18 y_3^s \geq 0 \quad                             &  & \forall s \in \mathcal{S} \\
+     & x_4 - 8 y_1^s - 10 y_2^s - 14 y_3^s \geq 0 \quad                              &  & \forall s \in \mathcal{S} \\
+     & -y_1^s \geq -d_a^s                                                            &  & \forall s \in \mathcal{S} \\
+     & -y_2^s \geq -d_b^s                                                            &  & \forall s \in \mathcal{S} \\
+     & -y_3^s \geq -d_c^s                                                            &  & \forall s \in \mathcal{S} \\
+     & x_1, x_2, x_3, x_4 \geq 0                                                                                    \\
+     & y_1^s, y_2^s, y_3^s \geq 0 \quad                                              &  & \forall s \in \mathcal{S} \\
+     & s \in S = \{1,2,3,4,5\}
+\end{align*}
+
+\subsection*{(b)}
+\begin{table}[h!]
+    \centering
+    \small
+    \caption{Risk-Neutral SLP with Recourse Solution}
+    \begin{tabular}{l|c|c|ccccc}
+        \toprule
+        \textbf{Resource}    & \textbf{Decision} & \textbf{Amount}  & \multicolumn{5}{c}{\textbf{Scenario }$s$}                                                    \\
+                             &                   &                  & Low (1)                                   & Moderate (2) & High (3) & Extreme (4) & Rare (5) \\
+        \midrule
+        Material-abc (units) & $x_1$             & 236.40           &                                           &              &          &             &          \\
+        Process-1 (hrs)      & $x_2$             & 690.00           &                                           &              &          &             &          \\
+        Process-2 (hrs)      & $x_3$             & 432.00           &                                           &              &          &             &          \\
+        Process-3 (hrs)      & $x_4$             & 318.00           &                                           &              &          &             &          \\
+        Product-a            & $y_1^s$           &                  & 15.00                                     & 0            & 0        & 0           & 8.00     \\
+        Product-b            & $y_2^s$           &                  & 10.00                                     & 10.80        & 10.80    & 10.80       & 10.00    \\
+        Product-c            & $y_3^s$           &                  & 5.00                                      & 15.00        & 15.00    & 15.00       & 10.00    \\
+        \midrule
+        $z_{RP}^*$ (Profit)  &                   & \textbf{2341.00} & \multicolumn{5}{l}{}                                                                         \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\newpage
+
+\section{Problem 3.2 (Deterministic Models)}
+\subsection*{(a) Expected Value Solution}
+\vspace{-2em}
+\begin{minipage}[t]{0.58\textwidth}
+    \begin{align*}
+        z_{EV}^* := \max \quad
+         & \left(1150y_1 + 1525y_2 + 1900 y_3 \right)
+        - \left(50 x_1 + 30 x_2 + 15 x_3 + 10 x_4 \right) \\
+        \text{s.t.} \quad
+         & -x_1 \geq -300                                 \\
+         & -x_2 \geq -700                                 \\
+         & -x_3 \geq -600                                 \\
+         & -x_4 \geq -500                                 \\
+         & -x_2 - x_3 - x_4 \geq -1600                    \\
+         & x_1 - 6 y_1 - 8 y_2 - 10 y_3 \geq 0            \\
+         & x_2 - 20 y_1 - 25 y_2 - 28 y_3 \geq 0 \quad    \\
+         & x_3 - 12 y_1 - 15 y_2 - 18 y_3 \geq 0 \quad    \\
+         & x_4 - 8 y_1 - 10 y_2 - 14 y_3 \geq 0 \quad     \\
+         & -y_1 \geq -22 \quad                            \\
+         & -y_2 \geq -17.5 \quad                          \\
+         & -y_3 \geq -19.5 \quad                          \\
+         & x_1, x_2, x_3, x_4, y_1, y_2, y_3 \geq 0
+    \end{align*}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.4\textwidth}
+    \vspace{5em}
+    \centering
+    \small
+    \captionof{table}{\small{Expected Value Problem Solution}}
+    \begin{tabular}{l|c|c}
+        \toprule
+        \textbf{Resource}    & \textbf{Decision} & \textbf{Amount}  \\
+        \midrule
+        Material-abc (units) & $x_1$             & 244.28           \\
+        Process-1 (hrs)      & $x_2$             & 700.00           \\
+        Process-2 (hrs)      & $x_3$             & 443.40           \\
+        Process-3 (hrs)      & $x_4$             & 334.60           \\
+        Product-a            & $y_1$             & 0.00             \\
+        Product-b            & $y_2$             & 6.16             \\
+        Product-c            & $y_3$             & 19.50            \\
+        \midrule
+        $z_{EV}^*$ (Profit)  &                   & \textbf{3233.00} \\
+        \bottomrule
+    \end{tabular}
+\end{minipage}
+
+\subsection*{(b) Extreme Event Solution}
+\vspace{-2em}
+\begin{minipage}[t]{0.58\textwidth}
+    \begin{align*}
+        z^{EES} := \max \quad
+         & \left(1150y_1 + 1525y_2 + 1900 y_3 \right)
+        - \left(50 x_1 + 30 x_2 + 15 x_3 + 10 x_4 \right) \\
+        \text{s.t.} \quad
+         & -x_1 \geq -300                                 \\
+         & -x_2 \geq -700                                 \\
+         & -x_3 \geq -600                                 \\
+         & -x_4 \geq -500                                 \\
+         & -x_2 - x_3 - x_4 \geq -1600                    \\
+         & x_1 - 6y_1 - 8y_2 - 10y_3 \geq 0               \\
+         & x_2 - 20y_1 - 25y_2 - 28y_3 \geq 0             \\
+         & x_3 - 12y_1 - 15y_2 - 18y_3 \geq 0             \\
+         & x_4 - 8y_1 - 10y_2 - 14y_3 \geq 0              \\
+         & -y_1 \geq -15                                  \\
+         & -y_1 \geq -20                                  \\
+         & -y_1 \geq -25                                  \\
+         & -y_1 \geq -30                                  \\
+         & -y_1 \geq -10                                  \\
+         & -y_2 \geq -10                                  \\
+         & -y_2 \geq -15                                  \\
+         & -y_2 \geq -20                                  \\
+         & -y_2 \geq -25                                  \\
+         & -y_2 \geq -10                                  \\
+         & -y_3 \geq -5                                   \\
+         & -y_3 \geq -15                                  \\
+         & -y_3 \geq -25                                  \\
+         & -y_3 \geq -30                                  \\
+         & -y_3 \geq -10                                  \\
+         & x_1, x_2, x_3, x_4, y_1, y_2, y_3 \geq 0
+    \end{align*}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.4\textwidth}
+    \vspace{12em}
+    \centering
+    \small
+    \captionof{table}{\small{Extreme Event Problem Solution}}
+    \begin{tabular}{l|c|c}
+        \toprule
+        \textbf{Resource}    & \textbf{Decision} & \textbf{Amount}  \\
+        \midrule
+        Material-abc (units) & $x_1$             & 130.00           \\
+        Process-1 (hrs)      & $x_2$             & 390.00           \\
+        Process-2 (hrs)      & $x_3$             & 240.00           \\
+        Process-3 (hrs)      & $x_4$             & 170.00           \\
+        Product-a            & $y_1$             & 0.00             \\
+        Product-b            & $y_2$             & 10.00            \\
+        Product-c            & $y_3$             & 5.00             \\
+        \midrule
+        $z_{EES}^*$ (Profit) &                   & \textbf{1250.00} \\
+        \bottomrule
+    \end{tabular}
+\end{minipage}
+
+\newpage
+
+\subsection*{(c) Scenario Analysis}
+
+\begin{align*}
+    z_s^{SA} := \max \quad
+     & \left(1150y_1^s + 1525y_2^s + 1900 y_3^s \right)
+    - \left(50 x_1^s + 30 x_2^s + 15 x_3^s + 10 x_4^s \right) \\
+    \text{s.t.} \quad
+     & -x_1^s \geq -300                                       \\
+     & -x_2^s \geq -700                                       \\
+     & -x_3^s \geq -600                                       \\
+     & -x_4^s \geq -500                                       \\
+     & -x_2^s - x_3^s - x_4^s \geq -1600                      \\
+     & x_1^s - 6y_1^s - 8y_2^s - 10y_3^s \geq 0               \\
+     & x_2^s - 20y_1^s - 25y_2^s - 28y_3^s \geq 0             \\
+     & x_3^s - 12y_1^s - 15y_2^s - 18y_3^s \geq 0             \\
+     & x_4^s - 8y_1^s - 10y_2^s - 14y_3^s \geq 0              \\
+     & -y_1^s \geq -d_a^s                                     \\
+     & -y_2^s \geq -d_b^s                                     \\
+     & -y_3^s \geq -d_c^s                                     \\
+     & x_1^s, x_2^s, x_3^s, x_4^s, y_1^s, y_2^s, y_3^s \geq 0
+\end{align*}
+
+\begin{table}[h!]
+    \centering
+    \small
+    \caption{Scenario-wise SA Problem Solution}
+    \begin{tabular}{l|c|ccccc}
+        \toprule
+        \textbf{Item}          & \textbf{Decision} & \textit{Low (1)} & \textit{Moderate (2)} & \textit{High (3)} & \textit{Extreme (4)} & \textit{Rare (5)} \\
+        \midrule
+        Material-abc (units)   & $x_1^s$           & 130.0            & 239.6                 & 250.0             & 250.0                & 180.0             \\
+        Process-1 (hrs)        & $x_2^s$           & 390.0            & 700.0                 & 700.0             & 700.0                & 530.0             \\
+        Process-2 (hrs)        & $x_3^s$           & 240.0            & 438.0                 & 450.0             & 450.0                & 330.0             \\
+        Process-3 (hrs)        & $x_4^s$           & 170.0            & 322.0                 & 350.0             & 350.0                & 240.0             \\
+        Product-a              & $y_1^s$           & 0.0              & 0.0                   & 0.0               & 0.0                  & 0.0               \\
+        Product-b              & $y_2^s$           & 10.0             & 11.2                  & 0.0               & 0.0                  & 10.0              \\
+        Product-c              & $y_3^s$           & 5.0              & 15.0                  & 25.0              & 25.0                 & 10.0              \\
+        \midrule
+        $z_s^{SA}$ (Objective) &                   & 1250.00          & 2810.00               & 3750.00           & 3750.00              & 2000.00           \\
+        \bottomrule
+    \end{tabular}
+
+    \vspace{0.5em}
+    \textbf{Expected value:} $\mathbb{E}[z_s^{SA}] = \mathbf{3043.00}$
+\end{table}
+
+\subsection*{(d)}
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \caption{\small{Expected profit associated with each model’s solution}}
+    \begin{tabular}{ll|c|c}
+        \toprule
+        \textbf{Model}    &   & \textbf{Profit suggested by model (\$)} & \textbf{Expected profit (\$)} \\
+        \midrule
+        RP                &   &                                         & 2341.00                       \\
+        EV                &   & 3233.00                                 & 2287.50                       \\
+        EES               &   & 1250.00                                 & 1250.00                       \\
+        SA                &   & 3043.00                                 &                               \\
+        \midrule
+        \multicolumn{4}{l}{\textbf{Scenario }$s$}                                                       \\
+        \midrule
+        \textit{Low}      & 1 & 1250.00                                 & 1250.00                       \\
+        \textit{Moderate} & 2 & 2810.00                                 & 2296.50                       \\
+        \textit{High}     & 3 & 3750.00                                 & 2276.50                       \\
+        \textit{Extreme}  & 4 & 3750.00                                 & 2276.50                       \\
+        \textit{Rare}     & 5 & 2000.00                                 & 1855.00                       \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+\vspace{-2em}
+\begin{align*}
+    EVPI & := z^{RP} - z^{WS} = z^{RP} - \sum_{s=1}^{5} p_s z_s^{SA} \\
+         & = \$2341.00 - \$3043.00                                   \\
+         & = -\$702.00                                               \\
+    VVS  & = \$2341.00 - \$2287.50                                    \\
+         & = \$53.5
+\end{align*}
+
+It is necessary to use the RP model in this case, as the decision maker is willing to pay \$702 for perfect information on the product demand forecast and the value of the stochatic solution is \$53.5.
+
+\section{Problem 3.3 (Excess Probability)}
+
+\begin{align*}
+    \max \quad
+     & \sum_{s \in \mathcal{S}} p^s \left(1150y_1^s + 1525y_2^s + 1900 y_3^s \right)
+    - \left(50 x_1 + 30 x_2 + 15 x_3 + 10 x_4 \right) - \lambda\sum_{s \in \mathcal{S}}p^s\gamma^s\\
+    \text{s.t.} \quad
+     & -x_1 \geq -300                                          \\
+     & -x_2 \geq -700                                          \\
+     & -x_3 \geq -600                                          \\
+     & -x_4 \geq -500                                          \\
+     & -x_2 - x_3 - x_4 \geq -1600                             \\
+     & x_1 - 6 y_1^s - 8 y_2^s - 10 y_3^s \geq 0 \quad          &  & \forall s \in \mathcal{S} \\
+     & x_2 - 20 y_1^s - 25 y_2^s - 28 y_3^s \geq 0 \quad        &  & \forall s \in \mathcal{S} \\
+     & x_3 - 12 y_1^s - 15 y_2^s - 18 y_3^s \geq 0 \quad        &  & \forall s \in \mathcal{S} \\
+     & x_4 - 8 y_1^s - 10 y_2^s - 14 y_3^s \geq 0 \quad         &  & \forall s \in \mathcal{S} \\
+     & -y_1^s \geq -d_a^s                                       &  & \forall s \in \mathcal{S} \\
+     & -y_2^s \geq -d_b^s                                       &  & \forall s \in \mathcal{S} \\
+     & -y_3^s \geq -d_c^s                                       &  & \forall s \in \mathcal{S} \\
+     & - 50 x_1 - 30 x_2 - 15 x_3 - 10 x_4 + 1150y_1^s + 1525y_2^s + 1900 y_3^s + M\gamma^s \geq \eta &  & \forall s \in \mathcal{S} \\
+     & x_1, x_2, x_3, x_4, y_1^s, y_2^s, y_3^s \geq 0          &  & \forall s \in \mathcal{S} \\
+     & \gamma^s \in \{0,1\}     &  & \forall s \in \mathcal{S} 
+\end{align*}
+
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \caption{\small{MR-SLP with EP solution}}
+    \begin{tabular}{ll|c|ccccc}
+        \toprule
+        \multicolumn{3}{l|}{} & \multicolumn{5}{c}{\textbf{Scenarios }$s$} \\
+        \textbf{Resource} & \textbf{Decision} & \textbf{Amount} & \textit{Low} & \textit{Moderate} & \textit{High} & \textit{Extreme} & \textit{Rare} \\
+        \midrule
+        \multicolumn{8}{l}{\textbf{(a)} $\eta := 0$ and $\lambda := 1000$} \\
+        \midrule
+        Material-abc (units) & $x_1$ & 236.4 & & & & \\
+        Process-1 (hrs)      & $x_2$ & 690.0 & & & & \\
+        Process-2 (hrs)      & $x_3$ & 432.0 & & & & \\
+        Process-3 (hrs)      & $x_4$ & 318.0 & & & & \\
+        Product-a            & $y_1$ & & 15 & 0 & 0 & 0 & 8 \\
+        Product-b            & $y_2$ & & 10 & 10.8 & 10.8 & 10.8 & 10 \\
+        Product-c            & $y_3$ & & 5 & 15 & 15 & 15 &10 \\
+        Scenario variable    & $\gamma^s$ & & 1 & 0 & 0 & 0 & 0 \\
+        Objective value & & $2241.0$ & \\
+        Expected Profit & & $2341.0$ & \\
+        \midrule
+        \multicolumn{8}{l}{\textbf{(b)} $\eta := 2341.0$ and $\lambda := 1000$} \\
+        \midrule
+        Material-abc (units) & $x_1$ & 236.4 & & & & & \\
+        Process-1 (hrs) & $x_2$ & 690.0 & & & & & \\
+        Process-2 (hrs) & $x_3$ & 432.0 & & & & & \\
+        Process-3 (hrs) & $x_4$ & 318.0 & & & & & \\
+        Product-a & $y_1$ & & 15 & 0 & 0 & 0 & 8 \\
+        Product-b & $y_2$ & & 10 & 10.8 & 10.8 & 10.8 & 10 \\
+        Product-c & $y_3$ & & 5 & 15 & 15 & 15 & 10 \\
+        Scenario variable & $\nu^s$ & & 1 & 0 & 0 & 0 & 1 \\
+        Objective value & & $2141.0$ & \\
+        Expected Profit & & $2341.0$ & \\
+        \midrule
+        \multicolumn{8}{l}{\textbf{(c)} $\lambda:=0$ and Risk-Neutral RP} \\
+        \midrule
+        Material-abc (units) & $x_1$ & 236.4 & & & & & \\
+        Process-1 (hrs) & $x_2$ & 690.0 & & & & & \\
+        Process-2 (hrs) & $x_3$ & 432.0 & & & & & \\
+        Process-3 (hrs) & $x_4$ & 318.0 & & & & & \\
+        Product-a & $y_1$ & & 15 & 0 & 0 & 0 & 8 \\
+        Product-b & $y_2$ & & 10 & 10.8 & 10.8 & 10.8 & 10 \\
+        Product-c & $y_3$ & & 5 & 15 & 15 & 15 & 10 \\
+        Scenario variable & $\nu^s$ & & 1 & 1 & 1 & 1 & 1 \\
+        Objective value & & $2341.00$ & \\
+        Expected Profit & & $2341.00$ & \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+It is observable that the objective value of when $\eta:=2341$ is lower compared to when $\eta:=0$. This is because more scenarios were violated as the threshold increased. Yet, the expected profit of all three cases are the same. This implies that the penalty factor regarding risks is not significant enough to change decision-making.
+
+\section{Problem 3.4 (Conditional Value-at-Risk) - idk}
+\vspace{-1.5em}
+\begin{align*}
+    \max \quad
+     & \sum_{s \in \mathcal{S}} p^s \left(1150y_1^s + 1525y_2^s + 1900 y_3^s \right)
+    - \left(50 x_1 + 30 x_2 + 15 x_3 + 10 x_4 \right) - \lambda\eta - \frac{\lambda}{1-\alpha}\sum_{s \in \mathcal{S}}p^s\nu^s\\
+    \text{s.t.} \quad
+     & -x_1 \geq -300                                          \\
+     & -x_2 \geq -700                                          \\
+     & -x_3 \geq -600                                          \\
+     & -x_4 \geq -500                                          \\
+     & -x_2 - x_3 - x_4 \geq -1600                             \\
+     & x_1 - 6 y_1^s - 8 y_2^s - 10 y_3^s \geq 0 \quad          &  & \forall s \in \mathcal{S} \\
+     & x_2 - 20 y_1^s - 25 y_2^s - 28 y_3^s \geq 0 \quad        &  & \forall s \in \mathcal{S} \\
+     & x_3 - 12 y_1^s - 15 y_2^s - 18 y_3^s \geq 0 \quad        &  & \forall s \in \mathcal{S} \\
+     & x_4 - 8 y_1^s - 10 y_2^s - 14 y_3^s \geq 0 \quad         &  & \forall s \in \mathcal{S} \\
+     & -y_1^s \geq -d_a^s                                       &  & \forall s \in \mathcal{S} \\
+     & -y_2^s \geq -d_b^s                                       &  & \forall s \in \mathcal{S} \\
+     & -y_3^s \geq -d_c^s                                       &  & \forall s \in \mathcal{S} \\
+     & - 50 x_1 - 30 x_2 - 15 x_3 - 10 x_4 + 1150y_1^s + 1525y_2^s + 1900 y_3^s - \eta + \nu^s \geq 0 &  & \forall s \in \mathcal{S} \\
+     & x_1, x_2, x_3, x_4, y_1^s, y_2^s, y_3^s, \nu^s \geq 0, \eta \text{ unrestricted}          &  & \forall s \in \mathcal{S}
+\end{align*}
+
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \caption{\small{MR-SLP with CVaR solution}}
+    \begin{tabular}{ll|c|ccccc}
+        \toprule
+        \multicolumn{3}{l|}{} & \multicolumn{5}{c}{\textbf{Scenarios }$s$} \\
+        \textbf{Resource} & \textbf{Decision} & \textbf{Amount} & \textit{Low} & \textit{Moderate} & \textit{High} & \textit{Extreme} & \textit{Rare} \\
+        \midrule
+        \multicolumn{8}{l}{\textbf{(a)} $\alpha := 0.85$ and $\lambda := 100$} \\
+        \midrule
+        Material-abc (units) & $x_1$ & 130.0 & & & & \\
+        Process-1 (hrs)      & $x_2$ & 390.0 & & & & \\
+        Process-2 (hrs)      & $x_3$ & 240.0 & & & & \\
+        Process-3 (hrs)      & $x_4$ & 170.0 & & & & \\
+        Product-a            & $y_1$ & & 0 & 0 & 0 & 0 & 0 \\
+        Product-b            & $y_2$ & & 10& 10 & 10 & 10 & 10 \\
+        Product-c            & $y_3$ & & 5 & 5 & 5 & 5 &5 \\
+        Scenario variable    & $\nu^s$ & & 0 & 0 & 0 & 0 & 0 \\
+        VaR    & $\eta$ & -1250 & & & & & \\
+        Objective value & & $126250$ & \\
+        Expected Profit & & $1250$ & \\
+        \midrule
+        \multicolumn{8}{l}{\textbf{(b)} $\alpha := 0.95$ and $\lambda := 100$} \\
+        \midrule
+        Material-abc (units) & $x_1$ & 130.0 & & & & \\
+        Process-1 (hrs)      & $x_2$ & 390.0 & & & & \\
+        Process-2 (hrs)      & $x_3$ & 240.0 & & & & \\
+        Process-3 (hrs)      & $x_4$ & 170.0 & & & & \\
+        Product-a            & $y_1$ & & 0 & 0 & 0 & 0 & 0 \\
+        Product-b            & $y_2$ & & 10& 10 & 10 & 10 & 10 \\
+        Product-c            & $y_3$ & & 5 & 5 & 5 & 5 &5 \\
+        Scenario variable    & $\nu^s$ & & 0 & 0 & 0 & 0 & 0 \\
+        VaR    & $\eta$ & -1250 & & & & & \\
+        Objective value & & $126250$ & \\
+        Expected Profit & & $1250$ & \\
+        \midrule
+        \multicolumn{8}{l}{\textbf{(c)} $\lambda := 0$ and Risk-Neutral RP} \\
+        \midrule
+        Material-abc (units) & $x_1$ & 236.4 & & & & & \\
+        Process-1 (hrs) & $x_2$ & 690.0 & & & & & \\
+        Process-2 (hrs) & $x_3$ & 432.0 & & & & & \\
+        Process-3 (hrs) & $x_4$ & 318.0 & & & & & \\
+        Product-a & $y_1$ & & 15 & 0 & 0 & 0 & 8 \\
+        Product-b & $y_2$ & & 10 & 10.8 & 10.8 & 10.8 & 10 \\
+        Product-c & $y_3$ & & 5 & 15 & 15 & 15 & 10 \\
+        Scenario variable    & $\nu^s$ & & 0 & 0 & 0 & 0 & 0 \\
+        VaR    & $\eta$ & - & & & & & \\
+        Objective value & & $2341.00$ & \\
+        Expected Profit & & $2341.00$ & \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+It is shown that all scenarios of the first and second model yield the same profit, so the CVaR equals the VaR. Since there is no variation across scenarios, changing $\alpha$ does not affect decisions or the objective value. Yet, it is observable that the objective values of the risk-averse approaches are lower than the risk-neutral approach, because decisions in risk-averse models are made in a relatively conservative way as means of considering risk matters - compared to a risk-neutral model. 
+
+\section{Problem 3.5 (Expected Excess)}
+
+\begin{align*}
+    \max \quad
+     & \sum_{s \in \mathcal{S}} p^s \left(1150y_1^s + 1525y_2^s + 1900 y_3^s \right)
+    - \left(50 x_1 + 30 x_2 + 15 x_3 + 10 x_4 \right) - \lambda\sum_{s \in \mathcal{S}}p^s\gamma^s\\
+    \text{s.t.} \quad
+     & -x_1 \geq -300                                          \\
+     & -x_2 \geq -700                                          \\
+     & -x_3 \geq -600                                          \\
+     & -x_4 \geq -500                                          \\
+     & -x_2 - x_3 - x_4 \geq -1600                             \\
+     & x_1 - 6 y_1^s - 8 y_2^s - 10 y_3^s \geq 0 \quad          &  & \forall s \in \mathcal{S} \\
+     & x_2 - 20 y_1^s - 25 y_2^s - 28 y_3^s \geq 0 \quad        &  & \forall s \in \mathcal{S} \\
+     & x_3 - 12 y_1^s - 15 y_2^s - 18 y_3^s \geq 0 \quad        &  & \forall s \in \mathcal{S} \\
+     & x_4 - 8 y_1^s - 10 y_2^s - 14 y_3^s \geq 0 \quad         &  & \forall s \in \mathcal{S} \\
+     & -y_1^s \geq -d_a^s                                       &  & \forall s \in \mathcal{S} \\
+     & -y_2^s \geq -d_b^s                                       &  & \forall s \in \mathcal{S} \\
+     & -y_3^s \geq -d_c^s                                       &  & \forall s \in \mathcal{S} \\
+     & - 50 x_1 - 30 x_2 - 15 x_3 - 10 x_4 + 1150y_1^s + 1525y_2^s + 1900 y_3^s + \gamma^s \geq -\eta &  & \forall s \in \mathcal{S} \\
+     & x_1, x_2, x_3, x_4, y_1^s, y_2^s, y_3^s \geq 0          &  & \forall s \in \mathcal{S} \\
+     & \gamma^s \in \{0,1\}     &  & \forall s \in \mathcal{S} 
+\end{align*}
+식 확인해봐야함
+
+\section{Problem 3.6 (Probabilistically Constrained SP)}
+
+\section{Problem 3.7 (Quantile Deviation)}
+
+\section{Problem 3.11 (Risk Measure)}
+
+\end{document}
