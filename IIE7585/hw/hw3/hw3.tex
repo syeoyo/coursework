@@ -716,6 +716,8 @@ few cases.
 \begin{align*}
     \min \quad
      & (1-\lambda\epsilon_1) \left(50 x_1 + 30 x_2 + 15 x_3 + 10 x_4 \right) + \lambda \epsilon_1 \eta + (1 - \lambda \epsilon_1) \sum_{s \in \mathcal{S}} p^s \left(1150y_1^s + 1525y_2^s + 1900 y_3^s \right) + \lambda \left( \epsilon_1 + \epsilon_2 \right) \sum_{s \in \mathcal{S}} p^s \nu^s                                \\
+    %  \max \quad
+    %  & (1-\lambda\epsilon_2) \left[ \sum_{s \in \mathcal{S}} p^s \left(1150y_1^s + 1525y_2^s + 1900 y_3^s \right) - \left(50 x_1 + 30 x_2 + 15 x_3 + 10 x_4 \right)\right] + \lambda \epsilon_2 \eta - \lambda \left( \epsilon_1 + \epsilon_2 \right) \sum_{s \in \mathcal{S}} p^s \nu^s                                \\
     \text{s.t.} \quad
      & -x_1 \geq -300                                                                                                                                                                                                                                                                                                              \\
      & -x_2 \geq -700                                                                                                                                                                                                                                                                                                              \\
@@ -729,8 +731,8 @@ few cases.
      & -y_1^s \geq -d_a^s                                                                                                                                                                                                                                                                           &  & \forall s \in \mathcal{S} \\
      & -y_2^s \geq -d_b^s                                                                                                                                                                                                                                                                           &  & \forall s \in \mathcal{S} \\
      & -y_3^s \geq -d_c^s                                                                                                                                                                                                                                                                           &  & \forall s \in \mathcal{S} \\
-     & \eta + \nu^s \left(1150y_1^s + 1525y_2^s + 1900 y_3^s + 50 x_1 + 30 x_2 + 15 x_3 + 10 x_4\right) \geq 0                                                                                                                                                                                      &  & \forall s \in \mathcal{S} \\
-     & x_1, x_2, x_3, x_4, y_1^s, y_2^s, y_3^s, u^s, v^s \geq 0, \eta \text{ unrestricted}                                                                                                                                                                                                          &  & \forall s \in \mathcal{S}
+     & \eta + \nu^s + \left(1150y_1^s + 1525y_2^s + 1900 y_3^s - 50 x_1 - 30 x_2 - 15 x_3 - 10 x_4\right) \geq 0                                                                                                                                                                                      &  & \forall s \in \mathcal{S} \\
+     & x_1, x_2, x_3, x_4, y_1^s, y_2^s, y_3^s, v^s \geq 0, \eta \text{ unrestricted}                                                                                                                                                                                                          &  & \forall s \in \mathcal{S}
 \end{align*}
 \vspace{-2em}
 \begin{table}[h!]
