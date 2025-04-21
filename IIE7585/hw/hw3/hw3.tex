@@ -465,7 +465,7 @@ threshold increased. Yet, the expected profit of all three cases are the same.
 This implies that the penalty factor regarding risks is not significant enough
 to change decision-making.
 
-\section{Problem 3.4 (Conditional Value-at-Risk) - idk}
+\section{Problem 3.4 (Conditional Value-at-Risk)}
 \vspace{-1.5em}
 \begin{align*}
     \max \quad
@@ -484,7 +484,7 @@ to change decision-making.
      & -y_1^s \geq -d_a^s                                                                             &  & \forall s \in \mathcal{S} \\
      & -y_2^s \geq -d_b^s                                                                             &  & \forall s \in \mathcal{S} \\
      & -y_3^s \geq -d_c^s                                                                             &  & \forall s \in \mathcal{S} \\
-     & - 50 x_1 - 30 x_2 - 15 x_3 - 10 x_4 + 1150y_1^s + 1525y_2^s + 1900 y_3^s - \eta + \nu^s \geq 0 &  & \forall s \in \mathcal{S} \\
+     & - 50 x_1 - 30 x_2 - 15 x_3 - 10 x_4 + 1150y_1^s + 1525y_2^s + 1900 y_3^s + \eta + \nu^s \geq 0 &  & \forall s \in \mathcal{S} \\
      & x_1, x_2, x_3, x_4, y_1^s, y_2^s, y_3^s, \nu^s \geq 0, \eta \text{ unrestricted}               &  & \forall s \in \mathcal{S}
 \end{align*}
 
@@ -535,7 +535,7 @@ to change decision-making.
         Product-b             & $y_2$                                      &                 & 10           & 10.8              & 10.8          & 10.8             & 10            \\
         Product-c             & $y_3$                                      &                 & 5            & 15                & 15            & 15               & 10            \\
         Scenario variable     & $\nu^s$                                    &                 & 0            & 0                 & 0             & 0                & 0             \\
-        VaR                   & $\eta$                                     & -               &              &                   &               &                  &               \\
+        VaR                   & $\eta$                                     & 180             &              &                   &               &                  &               \\
         Objective value       &                                            & $2341.00$       &                                                                                     \\
         Expected Profit       &                                            & $2341.00$       &                                                                                     \\
         \bottomrule
@@ -649,7 +649,7 @@ specified profit threshold.
      & -y_2^s + M^sz^s \geq -d_b^s                                                   &  & \forall s \in \mathcal{S} \\
      & -y_3^s + M^sz^s\geq -d_c^s                                                    &  & \forall s \in \mathcal{S} \\
      & 0.1z^1+ 0.3z^2+0.3z^3+0.2z^4+0.1z^5 \leq 1-\alpha                             &  & \forall s \in \mathcal{S} \\
-     & x_1, x_2, x_3, x_4, y_1^s, y_2^s, y_3^s, \nu^s \geq 0, z^s \in \{0,1\}        &  & \forall s \in \mathcal{S}
+     & x_1, x_2, x_3, x_4, y_1^s, y_2^s, y_3^s \geq 0, z^s \in \{0,1\}               &  & \forall s \in \mathcal{S}
 \end{align*}
 
 \begin{table}[h!]
@@ -671,7 +671,7 @@ specified profit threshold.
         Product-b             & $y_2$                                      &                 & 0            & 11.2              & 0             & 0                & 10            \\
         Product-c             & $y_3$                                      &                 & 25           & 15                & 25            & 25               & 10            \\
         Scenario variable     & $z^s$                                      &                 & 1            & 0                 & 0             & 0                & 0             \\
-        Objective value       &                                            & $2826.5$        &
+        Objective value       &                                            & $2826.5$        &                                                                                     \\
         Expected Profit       &                                            & $2826.5$        &                                                                                     \\
         \midrule
         \multicolumn{8}{l}{\textbf{(b)} $\alpha := 0.8$}                                                                                                                           \\
@@ -696,7 +696,6 @@ specified profit threshold.
         Product-a             & $y_1$                                      &                 & 15           & 0                 & 0             & 0                & 8             \\
         Product-b             & $y_2$                                      &                 & 10           & 10.8              & 10.8          & 10.8             & 10            \\
         Product-c             & $y_3$                                      &                 & 5            & 15                & 15            & 15               & 10            \\
-        Scenario variable     & $z^s$                                      &                 & 0            & 0                 & 0             & 0                & 0             \\
         Objective value       &                                            & $2341.00$       &                                                                                     \\
         Expected Profit       &                                            & $2341.00$       &                                                                                     \\
         \bottomrule
@@ -712,28 +711,26 @@ of scenarios using probabilistic constraints, enabling them to achieve higher
 expected profits than the risk-neutral baseline by trading off feasibility in
 few cases.
 
-\section{Problem 3.7 (Quantile Deviation) - idk}
+\section{Problem 3.7 (Quantile Deviation)}
 \vspace{-1.8em}
 \begin{align*}
-    \max \quad
-     & \sum_{s \in \mathcal{S}} p^s \left(1150y_1^s + 1525y_2^s + 1900 y_3^s \right)
-    - \left(50 x_1 + 30 x_2 + 15 x_3 + 10 x_4 \right) - \lambda \left[ \epsilon_1 \sum_{s \in \mathcal{S}} p^s u^s + \epsilon_2 \sum_{s \in \mathcal{S}} p^s v^s \right] \\
+    \min \quad
+     & (1-\lambda\epsilon_1) \left(50 x_1 + 30 x_2 + 15 x_3 + 10 x_4 \right) + \lambda \epsilon_1 \eta + (1 - \lambda \epsilon_1) \sum_{s \in \mathcal{S}} p^s \left(1150y_1^s + 1525y_2^s + 1900 y_3^s \right) + \lambda \left( \epsilon_1 + \epsilon_2 \right) \sum_{s \in \mathcal{S}} p^s \nu^s                                \\
     \text{s.t.} \quad
-     & -x_1 \geq -300                                                                                                                                                    \\
-     & -x_2 \geq -700                                                                                                                                                    \\
-     & -x_3 \geq -600                                                                                                                                                    \\
-     & -x_4 \geq -500                                                                                                                                                    \\
-     & -x_2 - x_3 - x_4 \geq -1600                                                                                                                                       \\
-     & x_1 - 6 y_1^s - 8 y_2^s - 10 y_3^s \geq 0 \quad                                                         &  & \forall s \in \mathcal{S}                            \\
-     & x_2 - 20 y_1^s - 25 y_2^s - 28 y_3^s \geq 0 \quad                                                       &  & \forall s \in \mathcal{S}                            \\
-     & x_3 - 12 y_1^s - 15 y_2^s - 18 y_3^s \geq 0 \quad                                                       &  & \forall s \in \mathcal{S}                            \\
-     & x_4 - 8 y_1^s - 10 y_2^s - 14 y_3^s \geq 0 \quad                                                        &  & \forall s \in \mathcal{S}                            \\
-     & -y_1^s \geq -d_a^s                                                                                      &  & \forall s \in \mathcal{S}                            \\
-     & -y_2^s \geq -d_b^s                                                                                      &  & \forall s \in \mathcal{S}                            \\
-     & -y_3^s \geq -d_c^s                                                                                      &  & \forall s \in \mathcal{S}                            \\
-     & u^s + \left(1150y_1^s + 1525y_2^s + 1900 y_3^s - 50 x_1 - 30 x_2 - 15 x_3 - 10 x_4\right) - \eta \geq 0 &  & \forall s \in \mathcal{S}                            \\
-     & v^s - \left(1150y_1^s + 1525y_2^s + 1900 y_3^s - 50 x_1 - 30 x_2 - 15 x_3 - 10 x_4\right) + \eta \geq 0 &  & \forall s \in \mathcal{S}                            \\
-     & x_1, x_2, x_3, x_4, y_1^s, y_2^s, y_3^s, u^s, v^s \geq 0, \eta \text{ unrestricted}                     &  & \forall s \in \mathcal{S}
+     & -x_1 \geq -300                                                                                                                                                                                                                                                                                                              \\
+     & -x_2 \geq -700                                                                                                                                                                                                                                                                                                              \\
+     & -x_3 \geq -600                                                                                                                                                                                                                                                                                                              \\
+     & -x_4 \geq -500                                                                                                                                                                                                                                                                                                              \\
+     & -x_2 - x_3 - x_4 \geq -1600                                                                                                                                                                                                                                                                                                 \\
+     & x_1 - 6 y_1^s - 8 y_2^s - 10 y_3^s \geq 0 \quad                                                                                                                                                                                                                                              &  & \forall s \in \mathcal{S} \\
+     & x_2 - 20 y_1^s - 25 y_2^s - 28 y_3^s \geq 0 \quad                                                                                                                                                                                                                                            &  & \forall s \in \mathcal{S} \\
+     & x_3 - 12 y_1^s - 15 y_2^s - 18 y_3^s \geq 0 \quad                                                                                                                                                                                                                                            &  & \forall s \in \mathcal{S} \\
+     & x_4 - 8 y_1^s - 10 y_2^s - 14 y_3^s \geq 0 \quad                                                                                                                                                                                                                                             &  & \forall s \in \mathcal{S} \\
+     & -y_1^s \geq -d_a^s                                                                                                                                                                                                                                                                           &  & \forall s \in \mathcal{S} \\
+     & -y_2^s \geq -d_b^s                                                                                                                                                                                                                                                                           &  & \forall s \in \mathcal{S} \\
+     & -y_3^s \geq -d_c^s                                                                                                                                                                                                                                                                           &  & \forall s \in \mathcal{S} \\
+     & \eta + \nu^s \left(1150y_1^s + 1525y_2^s + 1900 y_3^s + 50 x_1 + 30 x_2 + 15 x_3 + 10 x_4\right) \geq 0                                                                                                                                                                                      &  & \forall s \in \mathcal{S} \\
+     & x_1, x_2, x_3, x_4, y_1^s, y_2^s, y_3^s, u^s, v^s \geq 0, \eta \text{ unrestricted}                                                                                                                                                                                                          &  & \forall s \in \mathcal{S}
 \end{align*}
 \vspace{-2em}
 \begin{table}[h!]
@@ -745,22 +742,7 @@ few cases.
         \multicolumn{3}{l|}{} & \multicolumn{5}{c}{\textbf{Scenarios }$s$}                                                                                                         \\
         \textbf{Resource}     & \textbf{Decision}                          & \textbf{Amount} & \textit{Low} & \textit{Moderate} & \textit{High} & \textit{Extreme} & \textit{Rare} \\
         \midrule
-        \multicolumn{8}{l}{\textbf{(a)} $\alpha := 0.85, \epsilon_1 = 0.3, \epsilon_2 = 0.17, \lambda = 5.88$}                                                                     \\
-        \midrule
-        Material-abc (units)  & $x_1$                                      & 220.0           &              &                   &               &                  &               \\
-        Process-1 (hrs)       & $x_2$                                      & 655.0           &              &                   &               &                  &               \\
-        Process-2 (hrs)       & $x_3$                                      & 405.0           &              &                   &               &                  &               \\
-        Process-3 (hrs)       & $x_4$                                      & 290.0           &              &                   &               &                  &               \\
-        Product-a             & $y_1$                                      &                 & 13.25        & 0                 & 0             & 0                & 6.3           \\
-        Product-b             & $y_2$                                      &                 & 10           & 15                & 15            & 15               & 10            \\
-        Product-c             & $y_3$                                      &                 & 5            & 10                & 10            & 10               & 10            \\
-        Scenario variable     & $u^s$                                      &                 & 1887.5       & 0                 & 0             & 0                & 437.5         \\
-        Scenario variable     & $v^s$                                      &                 & 0            & 0                 & 0             & 0                & 0             \\
-        Eta                   & $\eta$                                     & $2250.0$        &                                                                                     \\
-        Objective value       &                                            & $2017.5$        &                                                                                     \\
-        Expected Profit       &                                            & $1607.2$          &                                                                                     \\
-        \midrule
-        \multicolumn{8}{l}{\textbf{(b)} $\alpha := 0.95, \epsilon_1 = 0.1, \epsilon_2 = 0.19, \lambda = 5.26$}                                                                     \\
+        \multicolumn{8}{l}{\textbf{(a)} $\alpha := 0.85, \epsilon_1 = 0.15, \epsilon_2 = \alpha, \lambda = 1/\epsilon_2 $}                                                         \\
         \midrule
         Material-abc (units)  & $x_1$                                      & 236.4           &              &                   &               &                  &               \\
         Process-1 (hrs)       & $x_2$                                      & 690.0           &              &                   &               &                  &               \\
@@ -769,11 +751,22 @@ few cases.
         Product-a             & $y_1$                                      &                 & 15           & 0                 & 0             & 0                & 8             \\
         Product-b             & $y_2$                                      &                 & 10           & 10.8              & 10.8          & 10.8             & 10            \\
         Product-c             & $y_3$                                      &                 & 5            & 15                & 15            & 15               & 10            \\
-        Scenario variable     & $u^s$                                      &                 & 2970         & 0                 & 0             & 0                & 1520          \\
-        Scenario variable     & $v^s$                                      &                 & 0            & 0                 & 0             & 0                & 0             \\
-        Eta                   & $\eta$                                     & $2790.0$        &                                                                                     \\
-        Objective value       &                                            & $2104.7$        &                                                                                     \\
-        Expected Profit       &                                            & $2341.0$        &                                                                                     \\
+        Scenario variable     & $u^s$                                      &                 & 1450         & 0                 & 0             & 0                & 0             \\
+        Threshold             & $\eta$                                     & $-1270.0$       &                                                                                     \\
+        Expected Profit       &                                            & $1981.41$       &                                                                                     \\
+        \midrule
+        \multicolumn{8}{l}{\textbf{(b)} $\alpha := 0.95, \epsilon_1 = 0.05, \epsilon_2 = \alpha, \lambda = 1/\epsilon_2 $}                                                         \\
+        \midrule
+        Material-abc (units)  & $x_1$                                      & 236.4           &              &                   &               &                  &               \\
+        Process-1 (hrs)       & $x_2$                                      & 690.0           &              &                   &               &                  &               \\
+        Process-2 (hrs)       & $x_3$                                      & 432.0           &              &                   &               &                  &               \\
+        Process-3 (hrs)       & $x_4$                                      & 318.0           &              &                   &               &                  &               \\
+        Product-a             & $y_1$                                      &                 & 15           & 0                 & 0             & 0                & 8             \\
+        Product-b             & $y_2$                                      &                 & 10           & 10.8              & 10.8          & 10.8             & 10            \\
+        Product-c             & $y_3$                                      &                 & 5            & 15                & 15            & 15               & 10            \\
+        Scenario variable     & $u^s$                                      &                 & 0            & 0                 & 0             & 0                & 0             \\
+        Threshold             & $\eta$                                     & $180.0$         &                                                                                     \\
+        Expected Profit       &                                            & $2208.32$       &                                                                                     \\
         \midrule
         \multicolumn{8}{l}{\textbf{(c)} $\lambda := 0$ and Risk-Neutral RP}                                                                                                        \\
         \midrule
@@ -784,21 +777,45 @@ few cases.
         Product-a             & $y_1$                                      &                 & 15           & 0                 & 0             & 0                & 8             \\
         Product-b             & $y_2$                                      &                 & 10           & 10.8              & 10.8          & 10.8             & 10            \\
         Product-c             & $y_3$                                      &                 & 5            & 15                & 15            & 15               & 10            \\
-        Objective value       &                                            & $2341.00$       &                                                                                     \\
+        Scenario variable     & $u^s$                                      &                 & 0            & 0                 & 0             & 0                & 0             \\
+        Threshold             & $\eta$                                     & $180.0$         &                                                                                     \\
         Expected Profit       &                                            & $2341.00$       &                                                                                     \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-Compared to (b), model (a) uses a smaller $\alpha$, which leads to a lower quantile reference point $\eta$, resulting in more conservative decisions and reduced expected profit. Model (a) takes more conservative decisions than Model (c) due to the QDEV-based penalty, which discourages profit falling below a certain quantile threshold. Yet, it is notable that Models (b) and (c) yield the same solution because the QDEV penalty, although triggered, was not significant enough to affect the optimal decision.
+Compared to (b), model (a) uses a smaller $\alpha$, which leads to a lower
+quantile reference point $\eta$, resulting in more conservative decisions and
+reduced expected profit. Model (a) takes more conservative decisions than Model
+(c) due to the QDEV-based penalty, which discourages profit falling below a
+certain quantile threshold. Yet, it is notable that Models (b) and (c) yield
+the same solution because the QDEV penalty, although triggered, was not
+significant enough to affect the optimal decision.
 
 \section{Problem 3.11 (Risk Measure)}
 
 \subsection{Comparision between Risk-Averse Measures}
-Quantile-based risk measures (e.g., EP, QDEV, CVaR) focus on limiting or penalizing outcomes in the worst $\alpha$-quantile of the profit distribution. These methods assess tail risk by imposing penalties based on how often (EP), how far (QDEV), or how much on average (CVaR) outcomes fall below a specified quantile threshold. Deviation-based risk measures (e.g., EE, ASD, CDEV) penalize deviations from a central reference, such as the mean or a fixed profit threshold. They aim to reduce variability and promote stability across scenarios, even if the worst-case scenarios are not explicitly targeted.
+Quantile-based risk measures (e.g., EP, QDEV, CVaR) focus on limiting or
+penalizing outcomes in the worst $\alpha$-quantile of the profit distribution.
+These methods assess tail risk by imposing penalties based on how often (EP),
+how far (QDEV), or how much on average (CVaR) outcomes fall below a specified
+quantile threshold. Deviation-based risk measures (e.g., EE, ASD, CDEV)
+penalize deviations from a central reference, such as the mean or a fixed
+profit threshold. They aim to reduce variability and promote stability across
+scenarios, even if the worst-case scenarios are not explicitly targeted.
 
 \subsection{Risk-Neutral vs Risk-Averse: Application}
 
-The risk-neutral solution is appropriate when the decision-maker is focused solely on maximizing expected value and is indifferent to variability or downside risk. This is suitable in applications when failures carry minimal consequences. For instance, in inventory management for low-cost consumer goods, occasional stockouts may be tolerable if the expected profit is maximized in the long run. In contrast, the risk-averse solution is preferred when uncertainty and downside risk significantly impact the stakeholder. For example, in energy managment systems, where supply shortages can cause blackouts, or in financial portfolio optimization, where losses in rare events must be controlled, quantile-based measures like CVaR or QDEV are appropriate for limiting tail risk. 
+The risk-neutral solution is appropriate when the decision-maker is focused
+solely on maximizing expected value and is indifferent to variability or
+downside risk. This is suitable in applications when failures carry minimal
+consequences. For instance, in inventory management for low-cost consumer
+goods, occasional stockouts may be tolerable if the expected profit is
+maximized in the long run. In contrast, the risk-averse solution is preferred
+when uncertainty and downside risk significantly impact the stakeholder. For
+example, in energy managment systems, where supply shortages can cause
+blackouts, or in financial portfolio optimization, where losses in rare events
+must be controlled, quantile-based measures like CVaR or QDEV are appropriate
+for limiting tail risk.
 
 \end{document}
