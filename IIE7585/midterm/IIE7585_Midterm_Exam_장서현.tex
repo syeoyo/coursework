@@ -1,0 +1,398 @@
+\documentclass[8pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=0.7in}
+\usepackage{mathtools}
+\usepackage{lscape}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{multicol}
+\usepackage{booktabs}
+
+\title{IIE7585 Midterm Exam}
+\author{Seohyun Jang (ID: 2021190002)}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+
+\subsection*{Sets/Indices}
+\begin{itemize}
+    \item $p \in P$: product set = \{desk, table, chair\}
+    \item $r \in R$: resource set = \{lumber, finishing, carpentry\}
+    \item $s \in S$: scenario set = \{low, medium, high\}
+    \item $\omega \in \Omega$: set of all possible scenarios
+\end{itemize}
+
+\subsection*{Parameters}
+\begin{itemize}
+    \item $a_{rp}$: amount of resource $r$ needed to produce one unit of product $p$
+    \item[]
+          \[
+              A = [a_{rp}] =
+              \begin{bmatrix}
+                  8 & 6   & 1   \\
+                  4 & 2   & 1.5 \\
+                  2 & 1.5 & 0.5
+              \end{bmatrix}
+          \]
+    \item $b_r$: total availability of resource $r$
+    \item[]
+          \[
+              b = [b_{r}] =
+              \begin{bmatrix}
+                  3500 \\
+                  1500 \\
+                  1000
+              \end{bmatrix}
+          \]
+    \item $c_r$: unit cost of purchasing one unit of resource $r$
+    \item[]
+          \[
+              c = [c_{r}] =
+              \begin{bmatrix}
+                  2 \\
+                  4 \\
+                  5.2
+              \end{bmatrix}
+          \]
+    \item $\rho_p$: selling price per unit of product $p$
+    \item[]
+          \[
+              \rho = [\rho_{p}] =
+              \begin{bmatrix}
+                  60 \\
+                  40 \\
+                  10
+              \end{bmatrix}
+          \]
+    \item $d_{p}(\omega^s)$: demand for product $p$ in scenario $s$
+    \item[]
+          \[
+              d(\omega) = [d_{ps}] =
+              \begin{bmatrix}
+                  50  & 150 & 250 \\
+                  20  & 110 & 250 \\
+                  200 & 225 & 500
+              \end{bmatrix}
+          \]
+    \item $\pi(\omega^s)$: probability of scenario $s$
+    \item[]
+          \[
+              \pi(\omega) = [\pi_{s}] =
+              \begin{bmatrix}
+                  0.3 \\
+                  0.4 \\
+                  0.3
+              \end{bmatrix}
+          \]
+\end{itemize}
+
+\subsection*{Decision Variables}
+\begin{itemize}
+    \item First-stage:
+          \begin{itemize}
+              \item[$\circ$] $x_r$: amount of resource $r$ to be purchased
+              \item[]
+                    \[
+                        x = [x_{r}] =
+                        \begin{bmatrix}
+                            x_1 \\
+                            x_2 \\
+                            x_3
+                        \end{bmatrix}
+                    \]
+          \end{itemize}
+    \item Second-stage:
+          \begin{itemize}
+              \item[$\circ$] $y_{p}(\omega^s)$: amount of product $p$ to be produced in scenario $s$
+              \item[]
+                    \[
+                        y(\omega) = [y_{ps}] =
+                        \begin{bmatrix}
+                            y_{11} & y_{12} & y_{13} \\
+                            y_{21} & y_{22} & y_{23} \\
+                            y_{31} & y_{32} & y_{33}
+                        \end{bmatrix}
+                    \]
+          \end{itemize}
+\end{itemize}
+
+\subsection*{(a) DEP}
+\noindent
+
+\begin{minipage}[t]{0.48\textwidth}
+    \textbf{DEP of the two-stage formulation}
+    \begin{subequations}
+        \begin{align}
+            \max \quad & -c^\top x + \sum_{\omega \in \Omega} \pi(\omega) \rho^\top y(\omega) \\
+            \text{s.t.} \quad
+                       & x \leq b                                                             \\
+                       & -x + Ay(\omega) \leq 0
+                       & \quad \forall \omega \in \Omega                                      \\
+                       & y(\omega) \leq d(\omega)
+                       & \quad \forall \omega \in \Omega                                      \\
+                       & x, y(\omega) \geq 0
+                       & \quad \forall \omega \in \Omega
+        \end{align}
+    \end{subequations}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \textbf{Dual formulation to the DEP}
+    \begin{subequations}
+        \begin{align}
+            \min \quad & b^\top \lambda + \sum_{\omega \in \Omega} d(\omega)^\top \nu(\omega) \\
+            \text{s.t.} \quad
+                       & \lambda - \sum_{\omega \in \Omega} \mu(\omega) \geq -c               \\
+                       & A^\top \mu(\omega) + \nu(\omega) \geq \pi(\omega) \rho
+                       & \quad \forall \omega \in \Omega                                      \\
+                       & \lambda, \mu(\omega), \nu(\omega) \geq 0
+                       & \quad \forall \omega \in \Omega
+        \end{align}
+    \end{subequations}
+\end{minipage}
+
+\vspace{0.6cm}
+
+\textbf{Comparison between DEP and Dual Formulation}
+
+\begin{itemize}
+    \item The DEP is a maximization problem aiming to maximize profit, given by the total
+          expected revenue minus the total cost. The dual is a minimization problem that
+          seeks to minimize the cost of resource usage through shadow prices and the cost
+          of unmet demand.
+
+    \item In both formulations, the second-stage variables ($y(\omega)$ in the DEP,
+          $\mu(\omega)$ and $\nu(\omega)$ in the dual) are scenario-specific. However,
+          the linking variable ($x$ in the DEP, $\lambda$ in the dual) couples the
+          scenarios together.
+
+    \item The first-stage decision variable $x$ serves as the linking variable in the
+          DEP, equal across all scenarios. In the dual, the variable $\lambda$ links the
+          first-stage constraints across all scenarios.
+
+    \item In the DEP, the constraint (1c) couples $x$ with each scenario’s production
+          decisions. In the dual, the constraint (2b) ensures that the sum of
+          scenario-specific dual variables $\mu(\omega)$ collectively balance the unit
+          cost coefficients.
+\end{itemize}
+
+\subsection*{(b) DEP-S}
+To write the scenario formulation, let $x(\omega)$ be copies of the first-stage
+decision variable $x$ for each $\omega \in \Omega$. The expectation
+nonanticipativity constraint (3e) is added to guarantee that $x(\omega)$ is the
+same for all $\omega \in \Omega$.
+
+\begin{subequations}
+    \begin{align}
+        \max \quad & \sum_{\omega \in \Omega} \pi(\omega) \left( -c^\top x(\omega) + \rho^\top y(\omega) \right) \\
+        \text{s.t.} \quad
+                   & x(\omega) \leq b
+                   & \quad \forall \omega \in \Omega                                                             \\
+                   & -x(\omega) + Ay(\omega) \leq 0
+                   & \quad \forall \omega \in \Omega                                                             \\
+                   & y(\omega) \leq d(\omega)
+                   & \quad \forall \omega \in \Omega                                                             \\
+                   & x(\omega) = \sum_{\bar{\omega} \in \Omega}\pi(\bar{\omega})x(\bar{\omega})
+                   & \quad \forall \omega \in \Omega                                                             \\
+                   & x(\omega), y(\omega) \geq 0
+                   & \quad \forall \omega \in \Omega
+    \end{align}
+\end{subequations}
+
+\subsection*{(c) Stage-wise (Nested) Multistage Formulation}
+Let $\Omega_1$ and $\Omega_2$ denote the set of second-stage and third-stage
+scenarios, respectively, with $\omega_1 \in \Omega_1$ and $\omega_2 \in
+    \Omega_2$. Let $\pi(\omega_1)$ and $\pi(\omega_2)$ be their respective
+probabilities.
+
+\begin{itemize}
+    \item[]
+          \begin{minipage}{0.47\textwidth}
+              \[
+                  d(\omega_1) =
+                  \begin{bmatrix}
+                      50  & 150 & 250 \\
+                      20  & 110 & 250 \\
+                      200 & 225 & 500
+                  \end{bmatrix}
+              \]
+          \end{minipage}
+          \hfill
+          \begin{minipage}{0.47\textwidth}
+              \[
+                  d(\omega_2) =
+                  \begin{bmatrix}
+                      50  & 100 & 200 \\
+                      50  & 120 & 200 \\
+                      150 & 200 & 300
+                  \end{bmatrix}
+              \]
+          \end{minipage}
+    \item[]
+          \begin{minipage}{0.47\textwidth}
+              \[
+                  \pi(\omega_1) =
+                  \begin{bmatrix}
+                      0.3 & 0.4 & 0.3
+                  \end{bmatrix}^\top
+              \]
+          \end{minipage}
+          \hfill
+          \begin{minipage}{0.47\textwidth}
+              \[
+                  \pi(\omega_2) =
+                  \begin{bmatrix}
+                      0.4 & 0.2 & 0.4
+                  \end{bmatrix}^\top
+              \]
+          \end{minipage}
+\end{itemize}
+
+\noindent
+Let $x_r^1$ denote the amount of resource $r$ purchased at stage 1 (here-and-now).
+Let $x_r^2(\omega_1)$ be the amount of resource $r$ purchased at stage 2, after the realization of scenario $\omega_1$.
+Similarly, $x_r^3(\omega_1, \omega_2)$ represents the amount of resource $r$ purchased at stage 3, given the scenario path $(\omega_1, \omega_2)$.
+Let $y_p^2(\omega_1)$ denote the amount of product $p$ produced at stage 2 under scenario $\omega_1$,
+and let $y_p^3(\omega_1, \omega_2)$ denote the amount of product $p$ produced at stage 3 under scenario path $(\omega_1, \omega_2)$.
+
+\bigskip
+\noindent
+The stage-wise (nested) multistage formulation of this problem is the following:
+\begin{subequations}
+    \begin{align}
+        \max \quad
+         & -c^\top x^1
+        + \sum_{\omega_1 \in \Omega_1} \pi(\omega_1)
+        \Big[ \rho^\top y^2(\omega_1) - c^\top x^2(\omega_1)                                              \\
+         & \quad\quad\quad\quad\quad\quad\quad\quad\quad\quad + \sum_{\omega_2 \in \Omega_2} \pi(\omega_2)
+        \left( \rho^\top y^3(\omega_1, \omega_2) - c^\top x^3(\omega_1, \omega_2) \right) \Big] \notag    \\
+        \text{s.t.} \quad
+         & x^1 \leq b \tag{4b}                                                                            \\[0.2em]
+         & A y^2(\omega_1) \leq x^1
+         & \quad \forall \omega_1 \in \Omega_1 \tag{4c}                                                   \\
+         & y^2(\omega_1) \leq d(\omega_1)
+         & \quad \forall \omega_1 \in \Omega_1 \tag{4d}                                                   \\
+         & x^2(\omega_1) \leq b
+         & \quad \forall \omega_1 \in \Omega_1 \tag{4e}                                                   \\
+         & A y^3(\omega_1, \omega_2) \leq x^1 + x^2(\omega_1) - A y^2(\omega_1)
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2 \tag{4f}                           \\
+         & y^3(\omega_1, \omega_2) \leq d(\omega_2)
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2 \tag{4g}                           \\
+         & x^3(\omega_1, \omega_2) \leq b
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2 \tag{4h}                           \\
+         & x^1,\ y^2(\omega_1),\ x^2(\omega_1),\ y^3(\omega_1, \omega_2),\ x^3(\omega_1, \omega_2) \geq 0
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2 \tag{4i}
+    \end{align}
+\end{subequations}
+
+\subsection*{(d) Scenario Formulation of the Multistage Problem}
+
+Let $\Omega_1$ and $\Omega_2$ be the sets of scenarios for the second and third
+stages, respectively. To write the scenario formulation, let $x^1(\omega_1,
+    \omega_2)$, $x^2(\omega_1, \omega_2)$, and $x^3(\omega_1, \omega_2)$ be copies
+of the first-, second-, and third-stage decision variables for each full
+scenario $(\omega_1, \omega_2) \in \Omega_1 \times \Omega_2$. The
+nonanticipativity constraints (5i) and (5j) are added to ensure that
+$x^1(\omega_1, \omega_2)$ is the same across all scenarios, and that
+$x^2(\omega_1, \omega_2)$ is the same across scenarios sharing the same
+$\omega_1$.
+
+\begin{subequations}
+    \begin{align}
+        \max \quad
+         & \sum_{\omega_1 \in \Omega_1} \sum_{\omega_2 \in \Omega_2} \pi(\omega_1) \pi(\omega_2)
+        \Big( -c^\top x^1(\omega_1, \omega_2) + \rho^\top y^2(\omega_1, \omega_2)                                                                                                \\
+         & \quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad -c^\top x^2(\omega_1, \omega_2) + \rho^\top y^3(\omega_1, \omega_2) -c^\top x^3(\omega_1, \omega_2) \Big) \notag
+        \\
+        \text{s.t.} \quad
+         & x^1(\omega_1, \omega_2) \leq b
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2                                                                                                                 \\
+         & A y^2(\omega_1, \omega_2) \leq x^1(\omega_1, \omega_2)
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2                                                                                                                 \\
+         & y^2(\omega_1, \omega_2) \leq d(\omega_1)
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2                                                                                                                 \\
+         & x^2(\omega_1, \omega_2) \leq b
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2                                                                                                                 \\
+         & A y^3(\omega_1, \omega_2) \leq x^1(\omega_1, \omega_2) + x^2(\omega_1, \omega_2) - Ay^2(\omega_1, \omega_2)
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2                                                                                                                 \\
+         & y^3(\omega_1, \omega_2) \leq d(\omega_2)
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2                                                                                                                 \\
+         & x^3(\omega_1, \omega_2) \leq b
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2                                                                                                                 \\
+         & x^1(\omega_1, \omega_2) = \sum_{\bar{\omega}_1 \in \Omega_1} \sum_{\bar{\omega}_2 \in \Omega_2} \pi(\bar{\omega}_1) \pi(\bar{\omega}_2) x^1(\bar{\omega}_1, \bar{\omega}_2)
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2                                                                                                                 \\
+         & x^2(\omega_1, \omega_2) = \sum_{\bar{\omega}_2 \in \Omega_2} \pi(\bar{\omega}_2) x^2(\bar{\omega_1}, \bar{\omega}_2)
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2                                                                                                                 \\
+         & x^1(\omega_1, \omega_2),\ x^2(\omega_1, \omega_2),\ x^3(\omega_1, \omega_2),\ y^2(\omega_1, \omega_2),\ y^3(\omega_1, \omega_2) \geq 0
+         & \quad \forall \omega_1 \in \Omega_1,\ \omega_2 \in \Omega_2
+    \end{align}
+\end{subequations}
+\\
+The stage-wise (nested) formulation models the sequential decision-making process more naturally by moving across stages throughout a clear time flow, whereas the scenario formulation replicates decision variables across full scenario paths and requires explicit nonanticipativity constraints to ensure consistency. While the stage-wise model is compact and intuitive, the scenario model is more general and suitable for complex scenario trees at the cost of larger problem size.
+
+\section*{Problem 2}
+\subsection*{(a)}
+We aim to prove that the recourse function $f(x, \omega)$ is a convex function in $(r(\omega), T(\omega))$. \\ [0.3em]
+The recourse function is defined in this way: 
+$f(x, \omega) = \min \left\{ q(\omega)^\top y \;\middle|\; Wy \geq r(\omega) - T(\omega)x, \ y \geq 0 \right\}.$\\ [0.3em]
+The dual of this primal problem is: 
+$\max \left\{ \mu^\top (r(\omega) - T(\omega)x) \;\middle|\; W^\top \mu \leq q(\omega),\ \mu \geq 0 \right\}.$\\ [0.3em]
+By strong duality, the optimal value satisfies: $f(x, \omega) = \mu^\top (r(\omega) - T(\omega)x)$ where \(\mu\) is an optimal dual solution. \\ [0.3em]
+Having $x$ as a constant, consider the convex combination $(r_\lambda, T_\lambda) = \lambda (r_1, T_1) + (1-\lambda)(r_2, T_2)$ for any \(\lambda \in [0,1]\). \\ [0.3em]
+We want to show that $ f(x; r_\lambda, T_\lambda) \leq \lambda f(x; r_1, T_1) + (1-\lambda) f(x; r_2, T_2)$ to prove convexity. \\ [0.3em]
+Setting \(\mu_1\) and \(\mu_2\) as optimal dual solutions corresponding to \((r_1, T_1)\) and \((r_2, T_2)\), \\[0.3em]
+$f(x; r_1, T_1) = \mu_1^\top (r_1 - T_1x), \quad f(x; r_2, T_2) = \mu_2^\top (r_2 - T_2x)$ holds owing to strong duality. \\ [0.3em]
+Using the definition of dual feasible solutions, \(\mu_1\) and \(\mu_2\) are also feasible for the dual of the convex combination problem, because the constraints are linear. \\ [0.3em]
+Thus, evaluating at \(\mu_1\) and \(\mu_2\) for the convex combination \((r_\lambda, T_\lambda)\),
+$$
+\begin{aligned}
+f(x; r_\lambda, T_\lambda) 
+&= \min \mu^\top (r_\lambda - T_\lambda x) \\
+&\leq \lambda \mu_1^\top (r_1 - T_1x) + (1-\lambda) \mu_2^\top (r_2 - T_2x) \\
+&= \lambda f(x; r_1, T_1) + (1-\lambda) f(x; r_2, T_2).
+\end{aligned}
+$$
+Therefore, by the definition of convexity,
+$
+f(x, \omega) \quad \text{is convex in} \quad (r(\omega), T(\omega)).
+\quad \blacksquare
+$
+
+\subsection*{(b)}
+We aim to prove that the recourse function $f(x, \omega)$ is a convex function in $x$ for all $x \in X_1 \cap X_2$. \\ [0.3em]
+Recall that the recourse function is defined as: $f(x, \omega) = \min \left\{ q(\omega)^\top y \;\middle|\; Wy \geq r(\omega) - T(\omega)x,\ y \geq 0 \right\}.$ \\ [0.3em] 
+Having $\lambda \in [0,1]$, we want to show $f(\lambda x_1 + (1-\lambda)x_2, \omega) \leq \lambda f(x_1, \omega) + (1-\lambda) f(x_2, \omega)$ for any $x_1, x_2 \in X_1 \cap X_2$ and fixed $\omega \in \Omega$.  \\ [0.3em]
+Let $y_1$ and $y_2$ be optimal solutions corresponding to $x_1$ and $x_2$, respectively, such that:
+$$
+y_1 \in \arg\min\{ q(\omega)^\top y \mid Wy \geq r(\omega) - T(\omega)x_1,\, y \geq 0\},
+$$
+$$
+y_2 \in \arg\min\{ q(\omega)^\top y \mid Wy \geq r(\omega) - T(\omega)x_2,\, y \geq 0\}.
+$$ \\[-0.4em]
+Now, define $y_\lambda = \lambda y_1 + (1-\lambda) y_2 $. \\ [0.3em]
+Since $Wy_1 \geq r(\omega) - T(\omega)x_1$ and $Wy_2 \geq r(\omega) - T(\omega)x_2$, we have:
+$$
+W y_\lambda = \lambda W y_1 + (1-\lambda) W y_2 \geq \lambda (r(\omega) - T(\omega)x_1) + (1-\lambda)(r(\omega) - T(\omega)x_2).
+$$
+$$
+W y_\lambda \geq r(\omega) - T(\omega)(\lambda x_1 + (1-\lambda)x_2).
+$$ \\[-0.4em]
+Also, $y_\lambda \geq 0$ since it is a convex combination of nonnegative vectors.
+Therefore, $y_\lambda$ is a feasible solution for $f(\lambda x_1 + (1-\lambda)x_2, \omega)$. \\ [0.3em]
+Evaluating the objective at $y_\lambda$,
+\begin{align*}
+q(\omega)^\top y_\lambda &= \lambda q(\omega)^\top y_1 + (1-\lambda) q(\omega)^\top y_2 \\
+&= \lambda f(x_1, \omega) + (1-\lambda) f(x_2, \omega).
+\end{align*}
+Since $f(\lambda x_1 + (1-\lambda)x_2, \omega)$ is the minimum over all feasible $y$, we conclude
+$$
+f(\lambda x_1 + (1-\lambda)x_2, \omega) \leq \lambda f(x_1, \omega) + (1-\lambda) f(x_2, \omega).
+$$ \\[-0.4em]
+Hence, $f(x, \omega)$ is convex in $x$ over $X_1 \cap X_2$. $\quad \blacksquare$
+
+\end{document}
