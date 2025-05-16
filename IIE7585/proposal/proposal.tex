@@ -144,22 +144,22 @@
 
     \vspace{7pt}
 
-    \begin{figure}[htb!]
-        \centering
-        \begin{minipage}[t]{0.48\linewidth} % 동일한 너비 지정
-            \centering
-            \includegraphics[width=\linewidth]{fig_avgprice.pdf}
-            \caption{Annual Average Electricity Price \cite{pecanstreet}}
-            \label{fig:avgprice}
-        \end{minipage}
-        \begin{minipage}[t]{0.48\linewidth} % 동일한 너비 지정
-            \centering
-            \includegraphics[width=\linewidth]{fig_price.pdf}
-            \caption{Variability in Real-Time Price \cite{pecanstreet}}
-            \label{fig:price}
-        \end{minipage}
-        \hfill % 두 이미지 사이 간격 조정
-    \end{figure}
+    % \begin{figure}[htb!]
+    %     \centering
+    %     \begin{minipage}[t]{0.48\linewidth} % 동일한 너비 지정
+    %         \centering
+    %         \includegraphics[width=\linewidth]{fig_avgprice.pdf}
+    %         \caption{Annual Average Electricity Price \cite{pecanstreet}}
+    %         \label{fig:avgprice}
+    %     \end{minipage}
+    %     \begin{minipage}[t]{0.48\linewidth} % 동일한 너비 지정
+    %         \centering
+    %         \includegraphics[width=\linewidth]{fig_price.pdf}
+    %         \caption{Variability in Real-Time Price \cite{pecanstreet}}
+    %         \label{fig:price}
+    %     \end{minipage}
+    %     \hfill % 두 이미지 사이 간격 조정
+    % \end{figure}
 
 \end{frame}
 
@@ -191,14 +191,14 @@
         \item \textbf{하루전시장}에 제출할 \textbf{Commitment 양},
         \item \textbf{실시간시장}에서의 \textbf{판매량},
         \item \textbf{에너지 저장 장치}의 \textbf{충$\cdot$방전량},
-        \item A
+        \item \textbf{Aggregation의 페널티 방지}를 위한 기여량
     \end{itemize}
 
     \begin{block}{}
         위 결정 변수들은 \textbf{포토폴리오의 총 이익을 최대화}하는 방향으로 결정되어야 하며, \textbf{포트폴리오 내 개별 DER 참여자의 에너지 활용 방식} 또한 함께 결정되어야 한다.
     \end{block}
 
-    \vspace{-0.7em}
+    \vspace{-1em}
 
     \begin{table}[]
         \caption{의사결정 시점에 따른 결정변수 구조}
@@ -212,7 +212,7 @@
             \multicolumn{1}{c|}{\multirow{3}{*}{\textbf{Wait-and-see}}} & \multicolumn{1}{c|}{실시간시장에서의 판매량}           & $\beta \left(= \sum y_i\right)$   & $y_i$    \\ \cline{2-4}
             \multicolumn{1}{c|}{}                              & \multicolumn{1}{c|}{에너지 저장 장치의 충방전량}        &      & $z_i^C, z_i^D$
             \\ \cline{2-4}
-            \multicolumn{1}{c|}{}                              & \multicolumn{1}{c|}{A}        &      & $d_i$
+            \multicolumn{1}{c|}{}                              & \multicolumn{1}{c|}{Aggregation의 페널티 방지를 위한 기여량}        &      & $d_i$
             \\ \hline
         \end{tabular}
     \end{table}
@@ -223,36 +223,73 @@
 
 \begin{frame}{방법론 소개}
     \textbf{Two-stage Stochastic Optimization} \\
-    \begin{block}{구조}
-        \textbf{(1) First-Stage}
+    \begin{block}{Risk-Neutral Model 구조}
+        \textbf{Objective Function} \\
         \begin{itemize}
-            \item displayed
+            \item 수익 최대화 (하루전시장 수익 + 실시간시장 판매량 - 하루전시장 미충족 페널티)
         \end{itemize}
-        \textbf{(2) Second-Stage}
+        \textbf{First-Stage}: 불확실성 실현 \underline{이전}
         \begin{itemize}
-            \item displayed
+            \item 하루전시장에 제출할 Commitment 양 $\left( \alpha, x_i \right)$
+        \end{itemize}
+        \textbf{Second-Stage}: 불확실성 실현 \underline{이후}
+        \begin{itemize}
+            \item 실시간시장에서의 판매량 $\left( \beta(\xi), y_i(\xi) \right)$
+            \item 에너지 저장 장치의 충$\cdot$방전량 $\left(z_i^C(\xi), z_i^D(\xi) \right)$
+            \item Aggregation의 페널티 방지를 위한 기여량 $\left( d_i(\xi) \right)$
         \end{itemize}
     \end{block}
-
-    \textbf{Sampling-based Approach}
+    \vspace{1em}
+    \textbf{Sampling-based Approach}를 활용하여 실시간 시장 가격이나 발전량의 불확실성 고려 \\
+    $\rightarrow$ 각 시나리오들은 historical data를 바탕으로 구성되며, second-stage decision
+    variable들과 stochastic parameter들은 scenario-dependent하게 $\xi_s$ 로 재정의됨
 
 \end{frame}
 
 %------------------------------------------------
 
-\begin{frame}{Fairness as a risk measure}
+\begin{frame}{공정성에 대한 고려}
 
-\end{frame}
-
+    \textbf{공정성을 위험(Risk)의 형태로 표현한 Fairness-Aware Risk-Averse Model}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 공정성 위반 정도를 리스크로 간주하여 이를 최소화하는 방향으로 의사결정 수행
+        \begin{itemize} \normalsize
+            \item[$\circ$] 포트폴리오 내에서 개별 DER 참여자가 불공정하게 활용될 경우, 참여 유인이 감소하고 장기적으로 이탈이 발생할 수 있음
+            \vspace{0.2em}
+            \item[$\circ$] 이로 인해 \textbf{집합체 수준의 기대 수익이 감소}하고, \textbf{페널티 위험 증가}
+        \end{itemize}
+        \vspace{0.5em}
+        \item 본 프로젝트에서의 공정성 정의:
+        \begin{itemize} \normalsize
+            \item[$\circ$] Aggregation의 페널티 방지를 위해 일정 기간동안 각 참여자가 \textbf{기여한 정도가 유사해야 함}
+            \vspace{0.2em}
+            \item[$\circ$] 기여도는 \textbf{내부 거래량과 해당 시간의 시장가격}을 함께 고려하여 측정
+        \end{itemize}
+    \end{itemize}
+    
+    \end{frame}
+    
 %------------------------------------------------
 \section[추후 계획]{추후 계획} %[Section Short Name] will be displayed in headline
 %------------------------------------------------
 
 \begin{frame}{추후 계획}
-    1. vss \\
-    1. deviation risk measure \\ 2. quantile risk measure \\
-    다양한 risk measure을 통한 공정성을 지킴으로 인한 수익 감소 혹은 안 지켰을때의 deviation 확률
-\end{frame}
+
+    \begin{enumerate}
+        \item VSS(Value of the Stochastic Solution) 분석 : deterministic 해와 stochastic 해의 가치 차이를 정량적으로 비교하여 불확실성 고려의 필요성 검증
+        \vspace{0.5em}
+        \item 공정성 기반 Risk Measure 선정: Deviation-based risk measure을 목적함수에 추가
+        \vspace{0.5em}
+        \item Risk(Fairness) 고려에 따른 Trade-off 분석
+            \begin{itemize} \normalsize
+                \item 공정성을 유지함으로 인한 수익 감소 정도
+                \item 공정성 기준을 무시했을 때 발생할 수 있는 Aggregation 이탈 확률
+            \end{itemize}
+        
+    \end{enumerate}
+    
+\end{frame}    
 
 %------------------------------------------------
 
