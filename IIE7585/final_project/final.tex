@@ -18,7 +18,7 @@
 %----------------------------------------------------------------------------------------
 
 \title{Fairness-Aware Optimal Market Participation of \\Aggregated Distributed Energy Resources}
-\subtitle{Term Project Proposal}
+\subtitle{Term Project}
 \author[장서현 $|$]{\textbf{장서현 (jangseohyun@yonsei.ac.kr)}\inst{1}} % set short author for author name in footline 
 \institute[연세대학교 산업공학과] 
 {
@@ -27,7 +27,7 @@
 }  % set short institute for department and institute in footline 
 \date[IIE7585 확률적계획법 $|$]
 {
-    IIE7585 확률적계획법 (2025.05.28)\\\bigskip
+    IIE7585 확률적계획법\\\bigskip
     \centerline{\includegraphics[width=0.4\textwidth]{logo_text.png}}
 } % set shortdate for conference title in footline
 
@@ -263,7 +263,7 @@
             \multicolumn{1}{l}{}                                        & \multicolumn{1}{l|}{}                            & Agg.                             & Ind. ($i$)     \\ \hline
             \multicolumn{1}{c|}{\textbf{Here-and-now}}                  & \multicolumn{1}{c|}{하루전시장에서의 commitment 결정}      & $\alpha \left(= \sum x_i\right)$ & $x_i$          \\ \hline
             \multicolumn{4}{c}{\textbf{불확실성 실현} (실시간 가격, 재생에너지 발전량)}                                                                                                           \\ \hline
-            \multicolumn{1}{c|}{\multirow{3}{*}{\textbf{Wait-and-see}}} & \multicolumn{1}{c|}{실시간시장에서의 판매량 / 계약미충족량}       & $\beta \left(= \sum y_i \right)$ & $y_i$ \\ \cline{2-4}
+            \multicolumn{1}{c|}{\multirow{3}{*}{\textbf{Wait-and-see}}} & \multicolumn{1}{c|}{실시간시장에서의 판매량 / 계약미충족량}       & $\beta \left(= \sum y_i \right)$ & $y_i$          \\ \cline{2-4}
             \multicolumn{1}{c|}{}                                       & \multicolumn{1}{c|}{에너지 저장 장치의 충방전량}             &                                  & $z_i^C, z_i^D$
             \\ \cline{2-4}
             \multicolumn{1}{c|}{}                                       & \multicolumn{1}{c|}{Aggregation의 페널티 방지를 위한 기여량} &                                  & $d_i$
@@ -288,7 +288,7 @@
         \end{itemize}
         \textbf{Second-Stage}: 불확실성 실현 \underline{이후}
         \begin{itemize}
-            \item 실시간시장에서의 판매량 / 계약미충족량 $\left( \beta(\xi), y_i(\xi)\right)$ 
+            \item 실시간시장에서의 판매량 / 계약미충족량 $\left( \beta(\xi), y_i(\xi)\right)$
             \item 에너지 저장 장치의 충$\cdot$방전량 $\left(z_i^C(\xi), z_i^D(\xi) \right)$
             \item Aggregation의 페널티 방지를 위한 기여량 $\left( d_i(\xi) \right)$
         \end{itemize}
@@ -328,24 +328,81 @@
 \end{frame}
 
 %------------------------------------------------
-\section[추후 계획]{추후 계획} %[Section Short Name] will be displayed in headline
+\section[수리 모델]{수리 모델} %[Section Short Name] will be displayed in headline
 %------------------------------------------------
 
-\begin{frame}{추후 계획}
-    \begin{enumerate}
-        \item VSS 분석 : deterministic 해와 stochastic 해의 가치 차이를 정량적으로 비교하여 불확실성 고려의 필요성 검증
-              \vspace{0.5em}
-        \item Risk-Neutral 모델과의 비교
-              \begin{itemize} \normalsize
-                  \item 동일한 조건 하에서 risk-neutral vs risk-averse 해 비교
-                  \item 공정성 리스크 도입 전후의 DER 간 기여 편차 변화 확인
-              \end{itemize} \vspace{0.5em}
-        \item Risk-Averseness에 따른 Trade-off 및 민감도 분석
-              \begin{itemize} \normalsize
-                  \item 공정성 유지를 위한 리스크항의 페널티 계수 변화에 따른 수익과 기여 편차의 상충 관계 분석
-                  \item 공정성 기준 적용 여부에 따른 Aggregation 안정성 평가
-              \end{itemize}
-    \end{enumerate}
+\begin{frame}{결정변수 및 파라미터 정의}
+
+    인덱스 셋, 파라미터, 결정변수
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{수리 모델 (1)}
+
+    목적함수 제약식일부 설명
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{수리 모델 (2)}
+
+    제약식 일부 설명
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{수리 모델 (3)}
+
+    최종 전체 수리 모델 명시
+
+\end{frame}
+
+%------------------------------------------------
+\section[실험 결과]{실험 결과} %[Section Short Name] will be displayed in headline
+%------------------------------------------------
+
+\begin{frame}{실험 세팅}
+
+    데이터 설명, 참여자 몇명, 그림, 노이즈 생성
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{VSS 분석}
+
+    deterministic 해와 stochastic 해의 가치 차이를 정량적으로 비교하여 불확실성 고려의 필요성 검증
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Risk-Neutral 모델과의 비교}
+
+    \begin{itemize}
+        \item 동일한 조건 하에서 risk-neutral vs risk-averse 해 비교
+        \item 공정성 리스크 도입 전후의 DER 간 기여 편차 변화 확인
+        \item 공정성 고려해야하는 이유 파악
+    \end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Risk-Averseness에 따른 Trade-off 및 민감도 분석}
+
+    \begin{itemize}
+        \item 공정성 유지를 위한 리스크항의 페널티 계수 변화에 따른 수익과 기여 편차의 상충 관계 분석
+        \item 공정성 기준 적용 여부에 따른 Aggregation 안정성 평가
+    \end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{결론}
+   
 \end{frame}
 
 %------------------------------------------------
