@@ -395,9 +395,9 @@
                 0 \le z_{it}(\xi_s) \le K_i \quad & \forall i, t, s \tag{1e}                                                                                                            \\
                                                   & e^+_{it}(\xi_s) = y^+_{it}(\xi_s) - \sum_{j \in I} d_{ijt}(\xi_s), \quad
                 e^-_{it}(\xi_s) = y^-_{it}(\xi_s) - \sum_{j \in I} d_{jit}(\xi_s)
-                                                  &                                                                                                           \forall i, t, s \tag{1f} \\
+                                                  & \forall i, t, s \tag{1f}                                                                                                            \\
                                                   & d_{iit}(\xi_s) = 0
-                                                  &                                                                                                           \forall i, t, s \tag{1g}
+                                                  & \forall i, t, s \tag{1g}
             \end{flalign}
         \end{subequations}
     \end{block}
@@ -472,13 +472,13 @@
                 - P_t^{PN} \sum_{i \in I} e^-_{it}(\xi_s)
                 \right]
                 \right)
-                - \lambda \cdot \mathbb{E} \left[ \sum_{i \in I} \Delta_i(\xi_s) \right]                                             \tag{2a} \\[0.5em]
+                - \lambda \cdot \mathbb{E} \left[ \sum_{i \in I} \Delta_i(\xi_s) \right]                                             \tag{2a}                                                          \\[0.5em]
                 \text{s.t.} \quad
-                 & \text{Constraints (1b)--(1m) are preserved} \nonumber                                                                      \\[0.5em]
-                 & \Lambda_i(\xi_s) = \sum_{t \in T} \sum_{j \ne i} d_{ijt}(\xi_s) \cdot (P_t^{PN} - P_t^{RT}(\xi_s)) & \forall i, s \tag{2b} \\
-                 & \bar{\Lambda}(\xi_s) = \frac{1}{I} \sum_{i \in I} \Lambda_i(\xi_s)                                 & \forall s   \tag{2c}  \\
-                 & \Delta_i(\xi_s) \ge \Lambda_i(\xi_s) - \bar{\Lambda}(\xi_s), \quad \Delta_i(\xi_s) \ge \bar{\Lambda}(\xi_s) - \Lambda_i(\xi_s), \quad \Delta_i(\xi_s) \ge 0                                        & \forall i, s \tag{2d} \\
-                 & \lambda \ge 0                      \tag{2e}                                                        &
+                 & \text{Constraints (1b)--(1m) are preserved} \nonumber                                                                                                                               \\[0.5em]
+                 & \Lambda_i(\xi_s) = \sum_{t \in T} \sum_{j \ne i} d_{ijt}(\xi_s) \cdot (P_t^{PN} - P_t^{RT}(\xi_s))                                                          & \forall i, s \tag{2b} \\
+                 & \bar{\Lambda}(\xi_s) = \frac{1}{I} \sum_{i \in I} \Lambda_i(\xi_s)                                                                                          & \forall s   \tag{2c}  \\
+                 & \Delta_i(\xi_s) \ge \Lambda_i(\xi_s) - \bar{\Lambda}(\xi_s), \quad \Delta_i(\xi_s) \ge \bar{\Lambda}(\xi_s) - \Lambda_i(\xi_s), \quad \Delta_i(\xi_s) \ge 0 & \forall i, s \tag{2d} \\
+                 & \lambda \ge 0                      \tag{2e}                                                                                                                 &
             \end{flalign}
         \end{subequations}
     \end{block}
@@ -497,8 +497,40 @@
 %------------------------------------------------
 
 \begin{frame}{실험 세팅}
+    \small
+    \begin{minipage}[t]{0.45\linewidth}
+        New York ISO의 데이터 기반 시나리오 생성 \footnotemark[3]
+        \vspace{-1em}
+        \begin{itemize}
+            \item 태양광 기반 DER 12개를 선정
+            \item 2022년 7월 18일 기준으로 시장가 수집
+        \end{itemize}
+        \begin{figure}
+            \centering
+            \includegraphics[width=\linewidth]{fig_dermap.pdf}
+            \vspace{-2em}
+            \caption{개별 DER 위치}
+        \end{figure}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.52\linewidth}
+        랜덤 노이즈를 활용한 시나리오 데이터 생성
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.9\linewidth]{fig_randgen.pdf}
+            \vspace{-1em}
+            \caption{시나리오별 DER 0의 발전량}
+        \end{figure}
+        \vspace{-2em}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.9\linewidth]{fig_randprice.pdf}
+            \vspace{-1em}
+            \caption{시나리오별 실시간 시장가격}
+        \end{figure}
+    \end{minipage}
 
-    데이터 설명, 참여자 몇명, 그림, 노이즈 생성
+    \scriptsize{\footnotetext[3]{NYISO, Energy Market \& Operational Data, \url{https://www.nyiso.com/energy-market-operational-data}\scriptsize{\cite{nyiso2024}}}}
 
 \end{frame}
 

@@ -372,7 +372,52 @@
 \setbeamertemplate{headline}{} % no headline on title page
 \setbeamertemplate{footline}{} % no footline on title page
 \setbeamertemplate{frametitle continuation}{}
-\begin{frame}[allowframebreaks]
+\begin{frame}[noframenumbering]
+    \frametitle{Appendix. 데이터 설명 및 시나리오 생성}
+    \small
+    \begin{minipage}[t]{0.45\linewidth}
+        New York ISO의 데이터 기반 시나리오 생성 \footnotemark[3]
+        \vspace{-1em}
+        \begin{itemize}
+            \item 태양광 기반 DER 12개를 선정
+            \item 2022년 7월 18일 기준으로 시장가 수집
+        \end{itemize}
+        \begin{figure}
+            \centering
+            \includegraphics[width=\linewidth]{fig_dermap.pdf}
+            \vspace{-2em}
+            \caption{개별 DER 지리적 위치}
+        \end{figure}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.52\linewidth}
+        랜덤 노이즈를 활용한 시나리오 데이터 생성
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.9\linewidth]{fig_randgen.pdf}
+            \vspace{-1em}
+            \caption{시나리오별 개별 DER의 발전량}
+        \end{figure}
+        \vspace{-1em}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.9\linewidth]{fig_randprice.pdf}
+            \vspace{-1em}
+            \caption{시나리오별 실시간 시장가격}
+        \end{figure}
+    \end{minipage}
+
+    \scriptsize{\footnotetext[3]{NYISO, Energy Market \& Operational Data, \url{https://www.nyiso.com/energy-market-operational-data}\scriptsize{\cite{nyiso2024}}}}
+\end{frame}
+}
+
+%------------------------------------------------
+
+{
+\setbeamertemplate{headline}{} % no headline on title page
+\setbeamertemplate{footline}{} % no footline on title page
+\setbeamertemplate{frametitle continuation}{}
+\begin{frame}[noframenumbering]
     \frametitle{Appendix. Risk-Neutral 수리 모델 (1)}
     \vspace{-1em}
     \footnotesize
@@ -421,7 +466,7 @@
 \setbeamertemplate{headline}{} % no headline on title page
 \setbeamertemplate{footline}{} % no footline on title page
 \setbeamertemplate{frametitle continuation}{}
-\begin{frame}[allowframebreaks]
+\begin{frame}[noframenumbering]
     \frametitle{Appendix. Risk-Neutral 수리 모델 (2)}
     \vspace{-1em}
     \begin{block}{}
@@ -470,7 +515,7 @@
 \setbeamertemplate{headline}{} % no headline on title page
 \setbeamertemplate{footline}{} % no footline on title page
 \setbeamertemplate{frametitle continuation}{}
-\begin{frame}[allowframebreaks]
+\begin{frame}[noframenumbering]
     \frametitle{Appendix. Risk-Averse 수리 모델}
     \vspace{-1em}
     \begin{block}{}

@@ -170,38 +170,42 @@ def plot_randomized_generation(R, I, T, S):
 
     plt.show()
        
-def plot_scenarios_for_generator(R, i):
+def plot_scenarios_for_generator(generation_data, R, i):
 # plot_scenarios_for_generator(R,1)
     T = R.shape[1]
     S = R.shape[2] 
     hours = np.arange(T) 
 
-    plt.figure(figsize=(15, 9))
+    plt.figure(figsize=(16, 8))
 
     for s in range(S):
-        plt.plot(hours, R[i, :, s], linestyle='-', alpha=0.6, label=f'Scenario {s+1}')
+        plt.plot(hours, R[i, :, s], linestyle='-', alpha=0.5)
+    plt.plot(hours, generation_data[i], linestyle='-', label=f'Original Data', lw=3, color = '#0053AA')
 
-    plt.xlabel("Hour")
-    plt.ylabel("Electricity Generated (kWh)")
-    plt.title(f"Hourly Electricity Generation for Generator {i} Across All Scenarios")
+    plt.xlabel("Hour", fontsize = 20)
+    plt.ylabel("Electricity Generated (kWh)", fontsize = 20)
+    # plt.title(f"Hourly Electricity Generation for DER {i} Across All Scenarios")
     plt.xticks(hours)
-    plt.legend(loc="upper left", fontsize='small', ncol=2)
+    plt.legend(loc="upper left", fontsize=23, ncol=2)
     plt.show()
 
 def plot_rt_scenarios(P_RT):
     T, S = P_RT.shape
     hours = np.arange(T)
 
-    plt.figure(figsize=(15, 8))
+    plt.figure(figsize=(16, 8))
 
     for s in range(S):
-        plt.plot(hours, P_RT[:, s], linestyle='-', alpha=0.6, label=f"Scenario {s+1}")
+        plt.plot(hours, P_RT[:, s], linestyle='-', alpha=0.5)
+        
+    P_RT_mean = np.mean(P_RT, axis=1)
+    plt.plot(hours, P_RT_mean, linestyle='-', lw=3, color = '#0053AA', label=f'Original Data')
 
-    plt.xlabel("Hour")
-    plt.ylabel("Price ($/MWHr)")
-    plt.title("Real-Time Price Scenarios (Hourly Averaged)")
+    plt.xlabel("Hour", fontsize = 20)
+    plt.ylabel("Price ($/MWHr)", fontsize = 20)
+    # plt.title("Real-Time Price Scenarios")
     plt.xticks(hours)
-    plt.legend(loc="upper left", fontsize="small", ncol=2)
+    plt.legend(loc="upper left", fontsize=23, ncol=2)
 
     plt.show()
 
