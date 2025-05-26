@@ -115,7 +115,7 @@
         $\Rightarrow$ 불안정한 대규모 중앙집중식 송전 및 발전에서 벗어나, 수요지 인근에서 환경친화적이고 독립적인 에너지의 생산과 소비 가능
     \end{block}
 
-    \footnotetext[1]{대한민국 정부, 분산에너지 활성화 특별법 (2023), \url{https://www.law.go.kr/법령/분산에너지활성화특별법}}
+    \footnotetext[1]{대한민국 정부, 분산에너지 활성화 특별법 (2023), \url{https://www.law.go.kr/법령/분산에너지활성화특별법} \cite{Korea2023DER}}
 
 \end{frame}
 
@@ -161,7 +161,7 @@
         \end{minipage}
         \hfill
     \end{figure}
-    \footnotetext[2]{Pecan Street Inc., Pecan Street Dataport, 2018, \url{https://www.pecanstreet.org/dataport}}
+    \footnotetext[2]{Pecan Street Inc., Pecan Street Dataport, 2018, \url{https://www.pecanstreet.org/dataport} \cite{pecanstreet}}
 \end{frame}
 
 %------------------------------------------------
@@ -263,7 +263,7 @@
             \multicolumn{1}{l}{}                                        & \multicolumn{1}{l|}{}                            & Agg.                             & Ind. ($i$)     \\ \hline
             \multicolumn{1}{c|}{\textbf{Here-and-now}}                  & \multicolumn{1}{c|}{하루전시장에서의 commitment 결정}      & $\alpha \left(= \sum x_i\right)$ & $x_i$          \\ \hline
             \multicolumn{4}{c}{\textbf{불확실성 실현} (실시간 가격, 재생에너지 발전량)}                                                                                                           \\ \hline
-            \multicolumn{1}{c|}{\multirow{3}{*}{\textbf{Wait-and-see}}} & \multicolumn{1}{c|}{실시간시장에서의 판매량 / 계약미충족량}       & $\beta \left(= \sum y_i \right)$ & $y_i$ \\ \cline{2-4}
+            \multicolumn{1}{c|}{\multirow{3}{*}{\textbf{Wait-and-see}}} & \multicolumn{1}{c|}{실시간시장에서의 판매량 / 계약미충족량}       & $\beta \left(= \sum y_i \right)$ & $y_i$          \\ \cline{2-4}
             \multicolumn{1}{c|}{}                                       & \multicolumn{1}{c|}{에너지 저장 장치의 충방전량}             &                                  & $z_i^C, z_i^D$
             \\ \cline{2-4}
             \multicolumn{1}{c|}{}                                       & \multicolumn{1}{c|}{Aggregation의 페널티 방지를 위한 기여량} &                                  & $d_i$
@@ -288,7 +288,7 @@
         \end{itemize}
         \textbf{Second-Stage}: 불확실성 실현 \underline{이후}
         \begin{itemize}
-            \item 실시간시장에서의 판매량 / 계약미충족량 $\left( \beta(\xi), y_i(\xi)\right)$ 
+            \item 실시간시장에서의 판매량 / 계약미충족량 $\left( \beta(\xi), y_i(\xi)\right)$
             \item 에너지 저장 장치의 충$\cdot$방전량 $\left(z_i^C(\xi), z_i^D(\xi) \right)$
             \item Aggregation의 페널티 방지를 위한 기여량 $\left( d_i(\xi) \right)$
         \end{itemize}
@@ -365,6 +365,149 @@
     }
 \end{frame}
 }
+
+%------------------------------------------------
+
+{
+\setbeamertemplate{headline}{} % no headline on title page
+\setbeamertemplate{footline}{} % no footline on title page
+\setbeamertemplate{frametitle continuation}{}
+\begin{frame}[allowframebreaks]
+    \frametitle{Appendix. Risk-Neutral 수리 모델 (1)}
+    \vspace{-1em}
+    \footnotesize
+    \begin{block}{}
+        \vspace{-1em}
+        \begin{subequations}
+            \begin{flalign}
+                \text{max} \;                     & \sum_{t \in T} \left(
+                P_t^{DA} \sum_{i \in I} x_{it}
+                + \mathbb{E}\left[
+                P_t^{RT}(\xi_s) \sum_{i \in I} e^+_{it}(\xi_s)
+                - P_t^{PN} \sum_{i \in I} e^-_{it}(\xi_s)
+                \right]
+                \right) \tag{1a}                                                                                                                                                        \\[0.5em]
+                                                  & R_{it}(\xi_s) - x_{it} = y_{it}^{+}(\xi_s) - y_{it}^{-}(\xi_s) + z^C_{it}(\xi_s) - z^D_{it}(\xi_s) \quad & \forall i, t, s \tag{1b} \\
+                                                  & R_{it}(\xi_s) \geq y^+_{it}(\xi_s) \quad                                                                 & \forall i, t, s \tag{1c} \\
+                                                  & z_{i,t+1}(\xi_s) = z_{it}(\xi_s) + z^C_{it}(\xi_s) - z^D_{it}(\xi_s) \quad                               & \forall i, t, s \tag{1d} \\
+                                                  & z^D_{it}(\xi_s) \le z_{it}(\xi_s), \quad
+                z^C_{it}(\xi_s) \le K_i - z_{it}(\xi_s), \quad
+                0 \le z_{it}(\xi_s) \le K_i \quad & \forall i, t, s \tag{1e}                                                                                                            \\
+                                                  & e^+_{it}(\xi_s) = y^+_{it}(\xi_s) - \sum_{j \in I} d_{ijt}(\xi_s), \quad
+                e^-_{it}(\xi_s) = y^-_{it}(\xi_s) - \sum_{j \in I} d_{jit}(\xi_s)
+                                                  & \forall i, t, s \tag{1f}                                                                                                            \\
+                                                  & d_{iit}(\xi_s) = 0
+                                                  & \forall i, t, s \tag{1g}
+            \end{flalign}
+        \end{subequations}
+    \end{block}
+
+    \small
+    \begin{itemize}
+        \item[(1a)] 포토폴리오의 하루전시장 + 실시간시장 수익의 기대값을 최대화
+        \item[(1b)] 발전량은 day-ahead 이행량, 실시간 조정량, 충방전량의 합으로 설명됨
+        \item[(1c)] 실시간 판매량은 실제 발전량 이하로 제한
+        \item[(1d)] 배터리 잔량은 시간에 따라 이월되며 충/방전량에 의해 갱신됨
+        \item[(1e)] 배터리 용량 내에서의 충전 가능량, 방전 가능량, 저장한계 제약 반영
+        \item[(1f)] 내부 조정의 결과로 에너지 잉여량 및 페널티 대상량이 다시 결정됨
+        \item[(1g)] 자기 자신과의 내부 거래는 불가능하도록 설정
+    \end{itemize}
+\end{frame}
+}
+
+%------------------------------------------------
+
+{
+\setbeamertemplate{headline}{} % no headline on title page
+\setbeamertemplate{footline}{} % no footline on title page
+\setbeamertemplate{frametitle continuation}{}
+\begin{frame}[allowframebreaks]
+    \frametitle{Appendix. Risk-Neutral 수리 모델 (2)}
+    \vspace{-1em}
+    \begin{block}{}
+        \vspace{-0.7em}
+        \begin{subequations}
+            \footnotesize
+            \begin{flalign}
+                \text{s.t.} \quad
+                 & y^+_{it}(\xi_s) \le M_1 \phi^1_{it}(\xi_s), \quad
+                y^-_{it}(\xi_s) \le M_1 (1 - \phi^1_{it}(\xi_s))
+                 &                                                                 & \forall i, t, s \tag{1h} \\
+                 & y^-_{it}(\xi_s) \le M_1 \phi^2_{it}(\xi_s), \quad
+                z^C_{it}(\xi_s) \le M_1 (1 - \phi^2_{it}(\xi_s))
+                 &                                                                 & \forall i, t, s \tag{1i} \\
+                 & z^C_{it}(\xi_s) \le M_1 \phi^3_{it}(\xi_s), \quad
+                z^D_{it}(\xi_s) \le M_1 (1 - \phi^3_{it}(\xi_s))
+                 &                                                                 & \forall i, t, s \tag{1j} \\
+                 & \sum_{i \in I} e^+_{it}(\xi_s) \le M_2 \phi^4_{t}(\xi_s), \quad
+                \sum_{i \in I} e^-_{it}(\xi_s) \le M_2 (1 - \phi^4_{t}(\xi_s))
+                 &                                                                 & \forall t, s \tag{1k}    \\
+                 & x_{it}, y^+_{it}(\xi_s), y^-_{it}(\xi_s), z_{it}(\xi_s),
+                z^C_{it}(\xi_s), z^D_{it}(\xi_s), d_{ijt}(\xi_s), e^+_{it}(\xi_s),
+                e^-_{it}(\xi_s) \ge 0
+                 &                                                                 & \forall i, t, s \tag{1l} \\
+                 & \phi^1_{it}(\xi_s), \phi^2_{it}(\xi_s), \phi^3_{it}(\xi_s),
+                \phi^4_{t}(\xi_s) \in \{0, 1\}
+                 &                                                                 & \forall i, t, s \tag{1m}
+            \end{flalign}
+        \end{subequations}
+    \end{block}
+    \small
+    \begin{itemize}
+        \item[(1h)] 개인의 실시간시장에서의 판매와 미이행 페널티 제출은 동시에 발생할 수 없음
+        \item[(1i)] 미이행 페널티 제출와 배터리 충전은 동시에 발생할 수 없음
+        \item[(1j)] 충전과 방전은 동시에 발생할 수 없음
+        \item[(1k)] 포토폴리오의 실시간시장에서의 판매와 미이행 페널티 제출은 동시에 발생할 수 없음
+        \item[(1l)] 모든 결정변수는 음수가 될 수 없음
+        \item[(1m)] $\phi$ 계열 이진 변수는 Big-M 제약을 통해 동시 발생 불가 조건들을 선형화
+    \end{itemize}
+\end{frame}
+}
+
+%------------------------------------------------
+
+{
+\setbeamertemplate{headline}{} % no headline on title page
+\setbeamertemplate{footline}{} % no footline on title page
+\setbeamertemplate{frametitle continuation}{}
+\begin{frame}[allowframebreaks]
+    \frametitle{Appendix. Risk-Averse 수리 모델}
+    \vspace{-1em}
+    \begin{block}{}
+        \vspace{-1em}
+        \begin{subequations}
+            \scriptsize
+            \begin{flalign}
+                \text{max} \quad
+                 & \sum_{t \in T} \left(
+                P_t^{DA} \sum_{i \in I} x_{it}
+                + \mathbb{E}\left[
+                P_t^{RT}(\xi_s) \sum_{i \in I} e^+_{it}(\xi_s)
+                - P_t^{PN} \sum_{i \in I} e^-_{it}(\xi_s)
+                \right]
+                \right)
+                - \lambda \cdot \mathbb{E} \left[ \sum_{i \in I} \Delta_i(\xi_s) \right]                                             \tag{2a}                                                          \\[0.5em]
+                \text{s.t.} \quad
+                 & \text{Constraints (1b)--(1m) are preserved} \nonumber                                                                                                                               \\[0.5em]
+                 & \Lambda_i(\xi_s) = \sum_{t \in T} \sum_{j \ne i} d_{ijt}(\xi_s) \cdot (P_t^{PN} - P_t^{RT}(\xi_s))                                                          & \forall i, s \tag{2b} \\
+                 & \bar{\Lambda}(\xi_s) = \frac{1}{I} \sum_{i \in I} \Lambda_i(\xi_s)                                                                                          & \forall s   \tag{2c}  \\
+                 & \Delta_i(\xi_s) \ge \Lambda_i(\xi_s) - \bar{\Lambda}(\xi_s), \quad \Delta_i(\xi_s) \ge \bar{\Lambda}(\xi_s) - \Lambda_i(\xi_s), \quad \Delta_i(\xi_s) \ge 0 & \forall i, s \tag{2d} \\
+                 & \lambda \ge 0                      \tag{2e}                                                                                                                 &
+            \end{flalign}
+        \end{subequations}
+    \end{block}
+    \small
+    \begin{itemize}
+        \item[(2a)] 포토폴리오의 기대 수익을 최대화하되, 기여도 편차에 따른 공정성 리스크를 페널티로 부여
+        \item[(2b)] DER $i$의 총 기여 금액은 포토폴리오의 페널티 상쇄를 위해 제공한 에너지를 기회비용으로 책정
+        \item[(2c)] 해당 시나리오에서의 DER 전체 평균 기여 금액 계산
+        \item[(2d)] DER $i$의 기여도가 평균보다 크거나 작을 때의 절대편차를 정의
+        \item[(2e)] $\lambda$는 공정성 리스크의 민감도를 조절하는 계수로, 음수가 될 수 없음
+    \end{itemize}
+\end{frame}
+}
+
+%------------------------------------------------
 
 {
 \setbeamertemplate{headline}{} % no headline on title page
