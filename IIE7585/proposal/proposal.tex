@@ -105,16 +105,24 @@
 %------------------------------------------------
 
 \begin{frame}{분산에너지원 (Distributed Energy Resources, DER)}
-    \textbf{에너지를 사용하는 공간ㆍ지역 또는 인근지역에서 공급하거나 생산하는 에너지로, 일정 규모 이하의 소규모 에너지 \footnotemark[1]}
+    \textbf{에너지를 사용하는 지역 또는 인근지역에서 공급하거나 생산하는 에너지로, 일정 규모 이하의 소규모 에너지 \footnotemark[1]}
     \begin{itemize}
         \item 태양광(PV) 및 풍력 터빈(WT) 발전 장치, 에너지 저장 시스템(ESS), 전기 자동차(EV) 충전기, 마이크로그리드 등을 포함
-        \item 소규모 발전의 형태에 적합한 탄소중립적인 에너지를 중심으로 생산
+        \item \underline{소규모 발전의 형태}에 적합한 \underline{탄소중립적인 에너지}를 중심으로 생산
     \end{itemize}
 
     \begin{block}{}
         $\Rightarrow$ 불안정한 대규모 중앙집중식 송전 및 발전에서 벗어나, 수요지 인근에서 환경친화적이고 독립적인 에너지의 생산과 소비 가능
     \end{block}
 
+    \vspace{\baselineskip}
+    
+    \textbf{개별 DER 사업자들의 에너지 활용방법}
+    \begin{enumerate}
+        \item 직접 소비
+        \item 스토리지에 저장
+        \item 전력시장에 판매
+    \end{enumerate}
     \footnotetext[1]{대한민국 정부, 분산에너지 활성화 특별법 (2023), \url{https://www.law.go.kr/법령/분산에너지활성화특별법} \cite{Korea2023DER}}
 
 \end{frame}
@@ -125,15 +133,15 @@
     \small
     \setlength{\columnsep}{0pt}
     \begin{columns}
-        \column{0.5\textwidth}
+        \column{0.48\textwidth}
         \raggedright
         \textbf{하루전시장 Day-ahead Commitment Market} \vspace{0.2em}
         \begin{itemize}
             \item 하루 전에 예측된 수요와 공급 기반으로 다음날 시간별 가격이 결정됨
-            \item 공시된 가격에 따라 일정량의 전력 공급/소비를 \textbf{하루 전에 계약} (commitment)
-            \item 계약 불이행 시 페널티 발생
+            \item 공시된 가격에 따라 일정량의 전력 공급을 \textbf{하루 전에 계약} (commitment)
+            \item \textbf{계약 불이행 시 페널티 발생}
         \end{itemize}
-        \column{0.45\textwidth}
+        \column{0.48\textwidth}
         \raggedright
         \textbf{실시간시장 Real-time Balancing Market} \vspace{0.2em}
         \begin{itemize}
@@ -143,33 +151,41 @@
         \end{itemize}
     \end{columns}
 
-    \vspace{7pt}
+    \vspace{5pt}
 
     \begin{figure}[htb!]
         \centering
         \begin{minipage}[t]{0.48\linewidth} % 동일한 너비 지정
             \centering
-            \includegraphics[width=\linewidth]{fig_avgprice.pdf}
+            \includegraphics[width=0.98\linewidth]{fig_avgprice.pdf}
+            \vspace{-1em}
             \caption{Annual Average Electricity Price \footnotemark[2]}
             \label{fig:avgprice}
         \end{minipage}
         \begin{minipage}[t]{0.48\linewidth} % 동일한 너비 지정
             \centering
-            \includegraphics[width=\linewidth]{fig_price.pdf}
+            \includegraphics[width=0.98\linewidth]{fig_price.pdf}
+            \vspace{-1em}
             \caption{Variability in Real-Time Price \footnotemark[2]}
             \label{fig:price}
         \end{minipage}
         \hfill
     \end{figure}
+
+    \vspace{-1.8em}
+    \begin{block}{}
+        $\Rightarrow$ 안정적인 day-ahead commitment와 전략적인 real-time dispatching을 통한 시장참여가 중요
+    \end{block}
+
     \footnotetext[2]{Pecan Street Inc., Pecan Street Dataport, 2018, \url{https://www.pecanstreet.org/dataport} \cite{pecanstreet}}
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}{분산에너지원의 통합 (Aggregation)}
-    \textbf{여러 개별 분산에너지원들을 하나의 포토폴리오(Aggregated Distributed Energy Resources, ADER)로 통합하는 과정으로, 가상 발전소나 에너지 관리 시스템 등을 통해 구현}
+    \textbf{여러 개별 분산에너지원들을 하나의 포트폴리오(Aggregated Distributed Energy Resources, ADER)로 통합하는 과정으로, 가상 발전소나 에너지 관리 시스템 등을 통해 구현}
     \begin{block}{Aggregation이 필요한 이유}
-        \textcircled{\small{1}} 재생에너지 발전량의 불확실성과 \textcircled{\small{2}} non-dispatchable한 출력 특성으로 인해,\\ 안정적인 day-ahead commitment를 하기 어렵고 그에 따라 페널티가 부과될 위험이 높음
+        \textcircled{\small{1}} 재생에너지 발전량의 불확실성과 \textcircled{\small{2}} 제한적인 dispatchability로 인해\\ 안정적인 day-ahead commitment를 하기 어렵고 그에 따라 페널티가 부과될 위험이 높음
     \end{block}
 
     \vspace{0.7em}
@@ -177,7 +193,7 @@
     \textbf{개별 DER들은 Aggregation을 통해}
     \begin{itemize}
         \item 서로의 발전잉여량과 계약미충족량을 상쇄시킴으로써 페널티 리스크 완화
-        \item 하나의 포토폴리오로서 최적화된 day-ahead commitment와 real-time trading 수행
+        \item 하나의 포트폴리오로서 최적화된 day-ahead commitment와 real-time trading 수행
     \end{itemize}
     \begin{figure}[h]
         \centering
@@ -212,7 +228,7 @@
             \hline
             참여자 수            & 5             & 10             & 15             \\ \hline
             개별 참여 수익의 합 (\$) & 4531.18       & 8508.44        & 10986.16       \\
-            통합 참여 수익 (\$)    & 4885.48       & 9422.01        & 12334..29      \\ \hline
+            통합 참여 수익 (\$)    & 4885.48       & 9422.01        & 12334.29       \\ \hline
             차이 (\%)          & \textbf{7.81} & \textbf{10.74} & \textbf{12.27} \\ \hline
         \end{tabular}
     \end{table}
@@ -221,15 +237,15 @@
         포트폴리오 내에서 개별 DER의 에너지가 \textbf{불공정하게 활용}된다면, Aggregation에 참여할 유인이 감소하고 \textbf{참여자의 이탈}이 발생할 수 있음
         \begin{itemize}
             \item 페널티 발생 위험 증가
-            \item 집합체 수준의 기대 수익 감소
+            \item 포트폴리오의 기대 수익 감소
             \item 개별적으로 정산받을 수 있는 양 감소
         \end{itemize}
-        $\Rightarrow$ 포토폴리오 내의 개별 DER들 사이 공정성이 고려되어야 함
+        $\Rightarrow$ 포트폴리오 내의 개별 DER들 사이 공정성이 고려되어야 함
     \end{alertblock}
 
     \underline{본 프로젝트에서의 공정성 정의:}
     \begin{itemize}
-        \item \textbf{기여도 기반}: 포토폴리오의 페널티 방지를 위해 각 참여자가 기여한 정도가 유사해야 함
+        \item \textbf{기여도 기반}: 포트폴리오의 페널티 방지를 위해 각 참여자가 기여한 정도가 유사해야 함
         \item 기여도는 \textbf{기여 에너지양과 해당 시간의 시장가격}을 함께 고려하여 측정
     \end{itemize}
 
@@ -263,7 +279,7 @@
             \multicolumn{1}{l}{}                                        & \multicolumn{1}{l|}{}                            & Agg.                             & Ind. ($i$)     \\ \hline
             \multicolumn{1}{c|}{\textbf{Here-and-now}}                  & \multicolumn{1}{c|}{하루전시장에서의 commitment 결정}      & $\alpha \left(= \sum x_i\right)$ & $x_i$          \\ \hline
             \multicolumn{4}{c}{\textbf{불확실성 실현} (실시간 가격, 재생에너지 발전량)}                                                                                                           \\ \hline
-            \multicolumn{1}{c|}{\multirow{3}{*}{\textbf{Wait-and-see}}} & \multicolumn{1}{c|}{실시간시장에서의 판매량 / 계약미충족량}       & $\beta \left(= \sum y_i \right)$ & $y_i$          \\ \cline{2-4}
+            \multicolumn{1}{c|}{\multirow{3}{*}{\textbf{Wait-and-see}}} & \multicolumn{1}{c|}{실시간시장에서의 판매량 / 계약미충족량}       & $\beta \left(= \sum e_i \right)$ & $e_i$          \\ \cline{2-4}
             \multicolumn{1}{c|}{}                                       & \multicolumn{1}{c|}{에너지 저장 장치의 충방전량}             &                                  & $z_i^C, z_i^D$
             \\ \cline{2-4}
             \multicolumn{1}{c|}{}                                       & \multicolumn{1}{c|}{Aggregation의 페널티 방지를 위한 기여량} &                                  & $d_i$
@@ -303,14 +319,14 @@
 %------------------------------------------------
 
 \begin{frame}{공정성 기반 위험 측정 (Fairness-Aware Risk Factor)}
-    각 DER \(i\)의 $T$시간 동안의 시나리오$(\xi_s)$별 총 기여도(금액):
+    각 DER \(i\)의 $T$시간 동안의 시나리오$(\xi_s)$별 \textbf{총 기여도(금액)}:
     \[
         \Lambda_{i}(\xi_s) = \sum_{t \in T} d_{it}(\xi_s) \cdot (P^{PN}_t - P^{RT}_{t}(\xi_s))
     \]
     \vspace{-1em}
     \begin{itemize}
         \item 각 DER이 실시간 시장에서 판매하여 얻을 수 있던 수익 중 일부($d \cdot P^{RT}$)를, 포트폴리오 전체의 페널티 회피($d \cdot P^{PN}$)를 위해 양보했다고 해석
-        \item 개인의 기회비용으로서 정의되는 marginal contribution을 기여도로 간주
+        \item \textbf{개인의 기회비용}으로서 정의되는 marginal contribution
     \end{itemize}
     \vspace{-0.5em}
     \begin{alertblock}{Central Deviation 활용}
@@ -321,7 +337,7 @@
         \vspace{-1.5em}
         \begin{itemize}
             \item 과도하게 기여하거나 충분히 기여하지 않은 DER 모두를 공정성 위반으로 간주
-            \item 공정성은 전체 시나리오에서의 기여 편차를 지속적으로 관리해야 실질적으로 보장되므로, tail risk만 반영하는 quantile risk measure보다 deviation-based 측도가 더 적합하다고 판단
+            \item 공정성은 전체 시나리오에서의 기여 편차를 지속적으로 관리해야 실질적으로 보장되므로, tail risk만 반영하는 quantile risk measure보다 deviation risk measure가 더 적합하다고 판단
         \end{itemize}
     \end{alertblock}
 
@@ -411,6 +427,54 @@
 \setbeamertemplate{footline}{} % no footline on title page
 \setbeamertemplate{frametitle continuation}{}
 \begin{frame}[noframenumbering]
+    \frametitle{결정변수 및 파라미터 정의}
+    \small
+    \begin{minipage}[t]{0.37\textwidth}
+        \textbf{인덱스}
+        \begin{itemize}
+            \item $i \in I$: 개별 DER 인덱스
+            \item $t \in T$: 시간 인덱스 (1시간 단위)
+            \item $s \in S$: 시나리오 인덱스
+        \end{itemize}
+        \vspace{0.5em}
+        \textbf{파라미터}
+        \begin{itemize}
+            \item $P_t^{DA}$: 시점 $t$에서 하루전시장 전력 가격
+            \item $P_t^{RT}(\xi)$: 시점 $t$에서 실시간시장 전력 가격
+            \item $P_t^{PN}$: 시점 $t$에서 계약 불이행 시 부과되는 페널티 가격
+            \item $R_{it}(\xi)$: 시점 $t$에서 DER $i$의 발전량
+            \item $K_i$: DER $i$의 배터리 용량
+            \item $M_1, M_2$: Big-M 계수
+            \item $\lambda$: 공정성 리스크의 가중치
+        \end{itemize}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.58\textwidth}
+        \textbf{결정변수}
+        \begin{itemize}
+            \item $x_{it}$: 시점 $t$에서 DER $i$의 하루전시장 전력 거래량
+            \item $y_{it}^{+}(\xi)$: 시점 $t$에서 DER $i$의 실시간시장 추가 판매량
+            \item $y_{it}^{-}(\xi)$: 시점 $t$에서 DER $i$의 commitment 미충족량
+            \item $z_{it}(\xi)$: 시점 $t$에서 DER $i$의 배터리 잔량
+            \item $z^C_{it}(\xi), z^D_{it}(\xi)$: 시점 $t$에서 DER $i$이 충$\cdot$방전한 에너지 양
+            \item $d_{ijt}(\xi)$: 시점 $t$에서 DER $i$가 $j$의 페널티 상쇄를 위해 활용된 에너지 양
+            \item $e^+_{it}(\xi)$: 내부조정 후 실시간시장에 판매 가능한 잉여 에너지
+            \item $e^-_{it}(\xi)$: 내부조정 후 남은 페널티 양
+            \item $\Lambda_i(\xi)$: DER $i$의 시나리오별 총 기여 금액
+            \item $\Delta_i(\xi)$: DER $i$의 평균 기여 대비 절대편차
+            \item $\phi^1_{it}(\xi), \phi^2_{it}(\xi), \phi^3_{it}(\xi), \phi^4_{t}(\xi)$: Big-M 기반 이진 변수들
+        \end{itemize}
+    \end{minipage}
+\end{frame}
+}
+
+%------------------------------------------------
+
+{
+\setbeamertemplate{headline}{} % no headline on title page
+\setbeamertemplate{footline}{} % no footline on title page
+\setbeamertemplate{frametitle continuation}{}
+\begin{frame}[noframenumbering]
     \frametitle{Appendix. Risk-Neutral 수리 모델 (1)}
     \vspace{-1em}
     \footnotesize
@@ -442,7 +506,7 @@
 
     \small
     \begin{itemize}
-        \item[(1a)] 포토폴리오의 하루전시장 + 실시간시장 수익의 기대값을 최대화
+        \item[(1a)] 포트폴리오의 하루전시장 + 실시간시장 수익의 기대값을 최대화
         \item[(1b)] 발전량은 day-ahead 이행량, 실시간 조정량, 충방전량의 합으로 설명됨
         \item[(1c)] 실시간 판매량은 실제 발전량 이하로 제한
         \item[(1d)] 배터리 잔량은 시간에 따라 이월되며 충/방전량에 의해 갱신됨
@@ -495,7 +559,7 @@
         \item[(1h)] 개인의 실시간시장에서의 판매와 미이행 페널티 제출은 동시에 발생할 수 없음
         \item[(1i)] 미이행 페널티 제출와 배터리 충전은 동시에 발생할 수 없음
         \item[(1j)] 충전과 방전은 동시에 발생할 수 없음
-        \item[(1k)] 포토폴리오의 실시간시장에서의 판매와 미이행 페널티 제출은 동시에 발생할 수 없음
+        \item[(1k)] 포트폴리오의 실시간시장에서의 판매와 미이행 페널티 제출은 동시에 발생할 수 없음
         \item[(1l)] 모든 결정변수는 음수가 될 수 없음
         \item[(1m)] $\phi$ 계열 이진 변수는 Big-M 제약을 통해 동시 발생 불가 조건들을 선형화
     \end{itemize}
@@ -524,20 +588,20 @@
                 - P_t^{PN} \sum_{i \in I} e^-_{it}(\xi_s)
                 \right]
                 \right)
-                - \lambda \cdot \mathbb{E} \left[ \sum_{i \in I} \Delta_i(\xi_s) \right]                                             \tag{2a}                                                          \\[0.5em]
+                - \lambda \cdot \mathbb{E} \left[ \sum_{i \in I} \Delta_i(\xi_s) \right]                                             \tag{2a}                             \\[0.5em]
                 \text{s.t.} \quad
-                 & \text{Constraints (1b)--(1m) are preserved} \nonumber                                                                                                                               \\[0.5em]
-                 & \Lambda_i(\xi_s) = \sum_{t \in T} \sum_{j \ne i} d_{ijt}(\xi_s) \cdot (P_t^{PN} - P_t^{RT}(\xi_s))                                                          & \forall i, s \tag{2b} \\
-                 & \bar{\Lambda}(\xi_s) = \frac{1}{I} \sum_{i \in I} \Lambda_i(\xi_s)                                                                                          & \forall s   \tag{2c}  \\
+                 & \text{Constraints (1b)--(1m) are preserved} \nonumber                                                                                                  \\[0.5em]
+                 & \Lambda_i(\xi_s) = \sum_{t \in T} \sum_{j \ne i} d_{ijt}(\xi_s) \cdot (P_t^{PN} - P_t^{RT}(\xi_s))                             & \forall i, s \tag{2b} \\
+                 & \bar{\Lambda}(\xi_s) = \frac{1}{I} \sum_{i \in I} \Lambda_i(\xi_s)                                                             & \forall s   \tag{2c}  \\
                  & \Delta_i(\xi_s) \ge \Lambda_i(\xi_s) - \bar{\Lambda}(\xi_s), \quad \Delta_i(\xi_s) \ge \bar{\Lambda}(\xi_s) - \Lambda_i(\xi_s) & \forall i, s \tag{2d} \\
-                 & \lambda \ge 0                      \tag{2e}                                                                                                                 &
+                 & \lambda \ge 0                      \tag{2e}                                                                                    &
             \end{flalign}
         \end{subequations}
     \end{block}
     \small
     \begin{itemize}
-        \item[(2a)] 포토폴리오의 기대 수익을 최대화하되, 기여도 편차에 따른 공정성 리스크를 페널티로 부여
-        \item[(2b)] DER $i$의 총 기여 금액은 포토폴리오의 페널티 상쇄를 위해 제공한 에너지를 기회비용으로 책정
+        \item[(2a)] 포트폴리오의 기대 수익을 최대화하되, 기여도 편차에 따른 공정성 리스크를 페널티로 부여
+        \item[(2b)] DER $i$의 총 기여 금액은 포트폴리오의 페널티 상쇄를 위해 제공한 에너지를 기회비용으로 책정
         \item[(2c)] 해당 시나리오에서의 DER 전체 평균 기여 금액 계산
         \item[(2d)] DER $i$의 기여도가 평균보다 크거나 작을 때의 절대편차를 정의
         \item[(2e)] $\lambda$는 공정성 리스크의 민감도를 조절하는 계수로, 음수가 될 수 없음
