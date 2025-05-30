@@ -172,7 +172,7 @@
         \textcircled{\small{1}} 재생에너지 발전량의 불확실성과 \textcircled{\small{2}} non-dispatchable한 출력 특성으로 인해,\\ 안정적인 day-ahead commitment를 하기 어렵고 그에 따라 페널티가 부과될 위험이 높음
     \end{block}
 
-    \vspace{0.7em}
+    \vspace{1em}
 
     \textbf{개별 DER들은 Aggregation을 통해}
     \begin{itemize}
@@ -184,16 +184,19 @@
         \begin{minipage}{0.325\textwidth}
             \centering
             \includegraphics[width=\linewidth]{fig_pool1.pdf}
+            \vspace{-2em}
             \caption{Pre-Pooling}
         \end{minipage}
         \begin{minipage}{0.325\textwidth}
             \centering
             \includegraphics[width=\linewidth]{fig_pool2.pdf}
+            \vspace{-2em}
             \caption{Pooling Process}
         \end{minipage}
         \begin{minipage}{0.325\textwidth}
             \centering
             \includegraphics[width=\linewidth]{fig_pool3.pdf}
+            \vspace{-2em}
             \caption{Post-Pooling}
         \end{minipage}
     \end{figure}
@@ -216,8 +219,8 @@
             차이 (\%)          & \textbf{7.81} & \textbf{10.74} & \textbf{12.27} \\ \hline
         \end{tabular}
     \end{table}
-    \vspace{-0.5em}
-    \begin{alertblock}{}
+
+    \begin{alertblock}{공정성에 대한 고려가 필요한 이유}
         포트폴리오 내에서 개별 DER의 에너지가 \textbf{불공정하게 활용}된다면, Aggregation에 참여할 유인이 감소하고 \textbf{참여자의 이탈}이 발생할 수 있음
         \begin{itemize}
             \item 페널티 발생 위험 증가
@@ -226,12 +229,6 @@
         \end{itemize}
         $\Rightarrow$ 포토폴리오 내의 개별 DER들 사이 공정성이 고려되어야 함
     \end{alertblock}
-
-    \underline{본 프로젝트에서의 공정성 정의:}
-    \begin{itemize}
-        \item \textbf{기여도 기반}: 포토폴리오의 페널티 방지를 위해 각 참여자가 기여한 정도가 유사해야 함
-        \item 기여도는 \textbf{기여 에너지양과 해당 시간의 시장가격}을 함께 고려하여 측정
-    \end{itemize}
 
 \end{frame}
 
@@ -263,7 +260,7 @@
             \multicolumn{1}{l}{}                                        & \multicolumn{1}{l|}{}                            & Agg.                             & Ind. ($i$)     \\ \hline
             \multicolumn{1}{c|}{\textbf{Here-and-now}}                  & \multicolumn{1}{c|}{하루전시장에서의 commitment 결정}      & $\alpha \left(= \sum x_i\right)$ & $x_i$          \\ \hline
             \multicolumn{4}{c}{\textbf{불확실성 실현} (실시간 가격, 재생에너지 발전량)}                                                                                                           \\ \hline
-            \multicolumn{1}{c|}{\multirow{3}{*}{\textbf{Wait-and-see}}} & \multicolumn{1}{c|}{실시간시장에서의 판매량 / 계약미충족량}       & $\beta \left(= \sum y_i \right)$ & $y_i$          \\ \cline{2-4}
+            \multicolumn{1}{c|}{\multirow{3}{*}{\textbf{Wait-and-see}}} & \multicolumn{1}{c|}{실시간시장에서의 판매량 / 계약미충족량}       & $\beta \left(= \sum e_i \right)$ & $e_i$          \\ \cline{2-4}
             \multicolumn{1}{c|}{}                                       & \multicolumn{1}{c|}{에너지 저장 장치의 충방전량}             &                                  & $z_i^C, z_i^D$
             \\ \cline{2-4}
             \multicolumn{1}{c|}{}                                       & \multicolumn{1}{c|}{Aggregation의 페널티 방지를 위한 기여량} &                                  & $d_i$
@@ -313,7 +310,7 @@
         \item 개인의 기회비용으로서 정의되는 marginal contribution
     \end{itemize}
     \vspace{-0.5em}
-    \begin{alertblock}{Central Deviㄴation 활용}
+    \begin{alertblock}{Central Deviation 활용}
         포트폴리오의 공정성을 확보하기 위해, 각 DER의 기여도 금액이 평균에서 벗어나는 경우에 대해 리스크로 간주하는 \textbf{양방향 절대편차 기반 측도} 도입
         \[
             \phi_{\text{CDEV}}(\Lambda_i) := \mathbb{E}_s \big[ \left| \Lambda_i(\xi_s) - \mathbb{E}_i[\Lambda_i(\xi_s)] \right| \big]
@@ -472,13 +469,13 @@
                 - P_t^{PN} \sum_{i \in I} e^-_{it}(\xi_s)
                 \right]
                 \right)
-                - \lambda \cdot \mathbb{E} \left[ \sum_{i \in I} \Delta_i(\xi_s) \right]                                             \tag{2a}                                                          \\[0.5em]
+                - \lambda \cdot \mathbb{E} \left[ \sum_{i \in I} \Delta_i(\xi_s) \right]                                             \tag{2a}                             \\[0.5em]
                 \text{s.t.} \quad
-                 & \text{Constraints (1b)--(1m) are preserved} \nonumber                                                                                                                               \\[0.5em]
-                 & \Lambda_i(\xi_s) = \sum_{t \in T} \sum_{j \ne i} d_{ijt}(\xi_s) \cdot (P_t^{PN} - P_t^{RT}(\xi_s))                                                          & \forall i, s \tag{2b} \\
-                 & \bar{\Lambda}(\xi_s) = \frac{1}{I} \sum_{i \in I} \Lambda_i(\xi_s)                                                                                          & \forall s   \tag{2c}  \\
+                 & \text{Constraints (1b)--(1m) are preserved} \nonumber                                                                                                  \\[0.5em]
+                 & \Lambda_i(\xi_s) = \sum_{t \in T} \sum_{j \ne i} d_{ijt}(\xi_s) \cdot (P_t^{PN} - P_t^{RT}(\xi_s))                             & \forall i, s \tag{2b} \\
+                 & \bar{\Lambda}(\xi_s) = \frac{1}{I} \sum_{i \in I} \Lambda_i(\xi_s)                                                             & \forall s   \tag{2c}  \\
                  & \Delta_i(\xi_s) \ge \Lambda_i(\xi_s) - \bar{\Lambda}(\xi_s), \quad \Delta_i(\xi_s) \ge \bar{\Lambda}(\xi_s) - \Lambda_i(\xi_s) & \forall i, s \tag{2d} \\
-                 & \lambda \ge 0                      \tag{2e}                                                                                                                 &
+                 & \lambda \ge 0                      \tag{2e}                                                                                    &
             \end{flalign}
         \end{subequations}
     \end{block}
@@ -536,15 +533,35 @@
 
 %------------------------------------------------
 
-\begin{frame}{VSS 분석}
+\begin{frame}{[실험 1] VSS 분석}
+    \textbf{Deterministic 해와 Stochastic 해의 차이를 비교$\cdot$분석}
+    \begin{itemize}
+        \item 불확실성 수준이 높을수록 stochastic 해가 상대적으로 우수함
+        \item Value of the Stochastic Solution를 통해 stochastic model의 실질적 필요성 확인
+        \item Expected Value of Perfect Information를 통해 정보 불확실성이 줄어들 때의 기대 이득 평가
+    \end{itemize}
 
-    deterministic 해와 stochastic 해의 가치 차이를 정량적으로 비교하여 불확실성 고려의 필요성 검증
-
+    \begin{table}[h!]
+        \small
+        \centering
+        \caption{불확실성 수준에 따른 Stochastic Programming 지표 비교}
+        \vspace{-0.5em}
+        \begin{tabular}{lcccc}
+            \toprule
+            \textbf{Randomness Level \footnotemark[4]} & \textbf{RP}  & \textbf{WS}  & \textbf{VSS} & \textbf{EVPI} \\
+            \midrule
+            High                      & 2162996.77 & 1342227.14 & 820769.63   & 45070.23     \\
+            Medium                    & 2168397.76 & 1345263.44 & 823134.32   & 27293.66     \\
+            Low                       & 2175853.37 & 1351382.83 & 824470.54   & 17261.13     \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    \footnotetext[4]{Randomness Level은 시나리오 생성 시 도입되는 랜덤 노이즈의 크기에 따라 정의되며, 이는 실험에서 불확실성 수준을 조절하는 기준으로 사용}
 \end{frame}
 
 %------------------------------------------------
 
-\begin{frame}{Risk-Neutral 모델과의 비교}
+\begin{frame}{[실험 2] Risk-Neutral 모델과의 비교}
 
     \begin{itemize}
         \item 동일한 조건 하에서 risk-neutral vs risk-averse 해 비교
@@ -556,7 +573,7 @@
 
 %------------------------------------------------
 
-\begin{frame}{Risk-Averseness에 따른 Trade-off 및 민감도 분석}
+\begin{frame}{[실험 3] Risk-Averseness에 따른 Trade-off 분석}
 
     \begin{itemize}
         \item 공정성 유지를 위한 리스크항의 페널티 계수 변화에 따른 수익과 기여 편차의 상충 관계 분석
@@ -567,7 +584,7 @@
 
 %------------------------------------------------
 
-\begin{frame}{결론}
+\begin{frame}{질문 답변}
 
 \end{frame}
 
