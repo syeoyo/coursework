@@ -534,13 +534,15 @@
 %------------------------------------------------
 
 \begin{frame}{[실험 1] VSS 분석}
+    \begin{block}{}
     \textbf{Deterministic 해와 Stochastic 해의 차이를 비교$\cdot$분석}
     \begin{itemize}
         \item 불확실성 수준이 높을수록 stochastic 해가 상대적으로 우수함
         \item Value of the Stochastic Solution를 통해 stochastic model의 실질적 필요성 확인
         \item Expected Value of Perfect Information를 통해 정보 불확실성이 줄어들 때의 기대 이득 평가
     \end{itemize}
-
+    \end{block}
+    
     \begin{table}[h!]
         \small
         \centering
@@ -548,11 +550,11 @@
         \vspace{-0.5em}
         \begin{tabular}{lcccc}
             \toprule
-            \textbf{Randomness Level \footnotemark[4]} & \textbf{RP}  & \textbf{WS}  & \textbf{VSS} & \textbf{EVPI} \\
+            \textbf{Randomness Level \footnotemark[4]} & \textbf{RP} & \textbf{WS} & \textbf{VSS} & \textbf{EVPI} \\
             \midrule
-            High                      & 2162996.77 & 1342227.14 & 820769.63   & 45070.23     \\
-            Medium                    & 2168397.76 & 1345263.44 & 823134.32   & 27293.66     \\
-            Low                       & 2175853.37 & 1351382.83 & 824470.54   & 17261.13     \\
+            High                                       & 2162996.77  & 1342227.14  & 820769.63    & 45070.23      \\
+            Medium                                     & 2168397.76  & 1345263.44  & 823134.32    & 27293.66      \\
+            Low                                        & 2175853.37  & 1351382.83  & 824470.54    & 17261.13      \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -562,30 +564,92 @@
 %------------------------------------------------
 
 \begin{frame}{[실험 2] Risk-Neutral 모델과의 비교}
+    \begin{block}{}
+        \begin{itemize}
+            \item 개별 DER들이 개별적으로 참여하였을때보다 포토폴리오로서는 수익의 총합은 증가하였지만, 개별 수익의 증가를 보장하지 못함
+            \item 다만, 공정성 편차를 고려한 모델의 경우 고려하지 않은 모델보다 수익의 총합은 감소하였지만, 개별 DER들 사이 불공정성을 줄였음을 확인
+        \end{itemize}
+        \end{block}
 
-    \begin{itemize}
-        \item 동일한 조건 하에서 risk-neutral vs risk-averse 해 비교
-        \item 공정성 리스크 도입 전후의 DER 간 기여 편차 변화 확인
-        \item 공정성 고려해야하는 이유 파악
-    \end{itemize}
+    \vspace{-0.5em}
+    \begin{table}[]
+        \footnotesize
+        \caption{참여 모델에 따른 개별 DER의 수익 비교}
+        \begin{tabular}{lcccccc}
+            \toprule
+                       & DER 0 & DER 1 & DER 2 & DER 3 & DER 4 & Total Profit \\ \midrule
+            Individual & 216712.1      & 347778.8      & 394054.1      &482698.7       & 168432.1      &1609676.0             \\
+            RN model   & 207053.3      & 393509.1      & 358628.3      &501582.7       &168496.4       & 1629269.8             \\
+            RA model   & 217472.5      & 345619.4      & 405583.1      & 502698.6      & 153983.5      & 1625357.3             \\ \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \vspace{-1em}
+
+    \begin{table}[]
+        \footnotesize
+        \caption{참여 모델에 따른 개별 DER의 기여 편차 비교}
+        \begin{tabular}{lcccccc}
+            \toprule
+                       & DER 0 & DER 1 & DER 2 & DER 3 & DER 4 & Total Contribution \\ \midrule
+            Individual & -      & -      & -      & -      & -      & -             \\
+            RN model   & 16040.2      & 10181.8      & 33039.1      & 15293.0      & 10172.6      & 84726.7             \\
+            RA model   & 14652.2      & 14652.2      & 14652.2      & 14652.2      & 14652.2      & 73261.4             \\ \bottomrule
+        \end{tabular}
+    \end{table}
 
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}{[실험 3] Risk-Averseness에 따른 Trade-off 분석}
-
+    \begin{block}{}
     \begin{itemize}
-        \item 공정성 유지를 위한 리스크항의 페널티 계수 변화에 따른 수익과 기여 편차의 상충 관계 분석
-        \item 공정성 기준 적용 여부에 따른 Aggregation 안정성 평가
+        \item 리스크에 대한 고려가 없을 시, 공정성은 최적화 과정에서 고려되지 않음
+        \item 리스크에 대한 고려를 할 시, 최적화 과정에서 공정성이 고려되며 공정성의 위반을 일으키지 않음
+        \item 리스크항의 페널티 계수가 커질수록 수익의 총합이 감소하는 것을 확인
     \end{itemize}
+    \end{block}
+
+
+    \begin{table}[]
+        \footnotesize
+        \caption{공정성 리스크 페널티 계수 변화에 따른 상충 관계 분석}
+        \vspace{-0.5em}
+        \begin{tabular}{cccccc}
+            \toprule
+            $\lambda$           & 0 & 1 & 5 & 10 & 30 \\ \midrule
+            Risk term           & 206365.1 & 0  & 0  & 0   & 0     \\
+            Obj. function value & 1629269.8 & 1628302.5  & 1625357.3  & 1624317.4   & 1623959.3    \\ \midrule
+            Execution time (s)     & 20  & 385  & 900  & 1500  & 1500  \\ 
+            MIP Gap (\%)     & 0.00  & 0.00  & 0.52  & 0.43  & 0.48  \\ \bottomrule
+        \end{tabular}
+    \end{table}
 
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}{질문 답변}
-
+    \small
+    \begin{itemize}
+        \item[Q1.] 실험을 통해 나온 모델이 적용 가능한 모델인가요?
+        \begin{itemize}
+            \item[A1.] 기술적 제약(배터리 효율성, 충방전 손실, 수명 등)과 네트워크 제약(전력망 안정성, 전압 제한, 전송 용량)이 고려되어야하며, aggregation이 개별모델보다 높은 수익성을 항시 보장하지 않는다는 점에서 보완해야 합니다.
+        \end{itemize}
+        \item[Q2.] 과도하게 기여한 것보다 충분히 기여하지 않은 DER에 더 큰 패널티를 부과해야하지 않을까요?
+        \begin{itemize}
+            \item[A2.] 실제로는 부족 기여가 더 큰 문제를 야기하기에, 비대칭적 페널티 체계(부족 기여에 더 큰 가중치)를 도입하는 것이 더 현실적입니다. 하지만, 부족 기여에 대한 페널티를 가중하여 부여한다하더라도, 결국 최적화 과정에서 시스템은 리스크를 최소화하기 위해 모든 DER가 평균에 맞춰 기여하도록 유도하게 됩니다.
+        \end{itemize}
+        \item[Q3.] 시계열(발전량 데이터, 실시간 시장가)에 노이즈를 추가하는 것이 적절한 시나리오 생성 방법인가요?
+        \begin{itemize}
+            \item[A3.] 둘 다 변동가능성이 크다는 점에서 노이즈를 추가하여 시나리오를 생성하는 것이 적절하다고 생각하지만, 발전량과 실시간가격 간의 상관관계를 노이즈 생성 과정에 반영해야 할지 추가 검토가 필요합니다.
+        \end{itemize}
+        \item[Q4.] 재생에너지의 경우 가까운 지역에서는 움직임이 비슷해서 hedging의 효과가 크지 않을 것 같은데, 어느 정도의 효과를 기대해 볼 수 있나요?
+        \begin{itemize}
+            \item[A4.] 실제로 가까운 지역에서는 발전량 패턴이 유사하여 hedging의 효과가 크지 않으며, 발전량 패턴이 다른 경우의 aggregation 효과는 더 커집니다.
+        \end{itemize}
+    \end{itemize}
 \end{frame}
 
 %------------------------------------------------
