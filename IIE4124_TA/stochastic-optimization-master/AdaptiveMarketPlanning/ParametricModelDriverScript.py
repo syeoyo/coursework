@@ -23,13 +23,22 @@ if __name__ == "__main__":
 	file = 'ParametricModel parameters.xlsx'
 	raw_data = pd.ExcelFile(file)
 	data = raw_data.parse('parameters')
-	cost = data.iat[0, 2]
-	trial_size = np.rint(data.iat[1, 2]).astype(int)
-	price_low = data.iat[2, 2]
-	price_high = data.iat[3, 2]
-	theta_step = data.iat[4, 2]
-	T = data.iat[5, 2]
-	reward_type = data.iat[6, 2]
+ 
+	# cost = data.iat[0, 2]
+	# trial_size = np.rint(data.iat[1, 2]).astype(int)
+	# price_low = data.iat[2, 2]
+	# price_high = data.iat[3, 2]
+	# theta_step = data.iat[4, 2]
+	# T = data.iat[5, 2]
+	# reward_type = data.iat[6, 2]
+ 
+	cost = data.iat[1, 2]
+	trial_size = np.rint(data.iat[2, 2]).astype(int) 
+	price_low = data.iat[3, 2]   
+	price_high = data.iat[4, 2] 
+	theta_step = data.iat[5, 2]
+	T = data.iat[6, 2]         
+	reward_type = data.iat[7, 2] 
 
 	# initialize model and run simulations
 	M = ParametricModel(state_names, decision_names, init_state, T, reward_type,cost, price_low = price_low, price_high = price_high)

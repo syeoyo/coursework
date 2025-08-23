@@ -24,29 +24,53 @@ if __name__ == "__main__":
 	file = 'Parameters.xlsx'
 	raw_data = pd.ExcelFile(file)
 	data = raw_data.parse('Parameters')
-	initial_state = {'potential_pop': float(data.iat[0, 0]),
-					 'success': data.iat[1, 0],
-					  'failure': float(data.iat[2, 0]),
-					  'l_response': float(data.iat[3, 0]),
-					  'theta_stop_low': data.iat[4, 0],
-					  'theta_stop_high': data.iat[5, 0],
-					  'alpha': data.iat[6, 0],
-					  'K': int(data.iat[7, 0]),
-					  'N': int(data.iat[8, 0]),
-					  'trial_size': int(data.iat[9, 0]),
-					  'patient_cost': data.iat[10, 0],
-					  'program_cost': data.iat[11, 0],
-					  'success_rev': data.iat[12, 0],
-					  'sampling_size': int(data.iat[13, 0]),
-					  'enroll_min': int(data.iat[14, 0]),
-					  'enroll_max': int(data.iat[15, 0]),
-					  'enroll_step': int(data.iat[16, 0]),
-					  'H': int(data.iat[17, 0]),
-					  'true_l_response': data.iat[18, 0],
-					  'true_succ_rate': data.iat[19, 0]}
-	model_name = data.iat[20, 0]
-	numIterations = int(data.iat[21,0])
-	
+	# initial_state = {'potential_pop': float(data.iat[0, 0]),
+	# 				 'success': data.iat[1, 0],
+	# 				  'failure': float(data.iat[2, 0]),
+	# 				  'l_response': float(data.iat[3, 0]),
+	# 				  'theta_stop_low': data.iat[4, 0],
+	# 				  'theta_stop_high': data.iat[5, 0],
+	# 				  'alpha': data.iat[6, 0],
+	# 				  'K': int(data.iat[7, 0]),
+	# 				  'N': int(data.iat[8, 0]),
+	# 				  'trial_size': int(data.iat[9, 0]),
+	# 				  'patient_cost': data.iat[10, 0],
+	# 				  'program_cost': data.iat[11, 0],
+	# 				  'success_rev': data.iat[12, 0],
+	# 				  'sampling_size': int(data.iat[13, 0]),
+	# 				  'enroll_min': int(data.iat[14, 0]),
+	# 				  'enroll_max': int(data.iat[15, 0]),
+	# 				  'enroll_step': int(data.iat[16, 0]),
+	# 				  'H': int(data.iat[17, 0]),
+	# 				  'true_l_response': data.iat[18, 0],
+	# 				  'true_succ_rate': data.iat[19, 0]}
+	# model_name = data.iat[20, 0]
+	# numIterations = int(data.iat[21,0])
+ 
+	initial_state = {'potential_pop': float(data.iat[0, 1]),
+					'success': data.iat[1, 1],
+					'failure': float(data.iat[2, 1]),
+					'l_response': float(data.iat[3, 1]),
+					'theta_stop_low': data.iat[4, 1],
+					'theta_stop_high': data.iat[5, 1],
+					'alpha': data.iat[6, 1],
+					'K': int(data.iat[7, 1]),
+					'N': int(data.iat[8, 1]),
+					'trial_size': int(data.iat[9, 1]),
+					'patient_cost': data.iat[10, 1],
+					'program_cost': data.iat[11, 1],
+					'success_rev': data.iat[12, 1],
+					'sampling_size': int(data.iat[13, 1]),
+					'enroll_min': int(data.iat[14, 1]),
+					'enroll_max': int(data.iat[15, 1]),
+					'enroll_step': int(data.iat[16, 1]),
+					'H': int(data.iat[17, 1]),
+					'true_l_response': data.iat[18, 1],
+					'true_succ_rate': data.iat[19, 1]}
+
+	model_name = data.iat[20, 1] 
+	numIterations = int(data.iat[21, 1])
+		
 	decision_names = ['enroll', 'prog_continue', 'drug_success']
 	
 	#########################################################################

@@ -190,7 +190,8 @@ def Main():
 
 	#Preparation to plot the added bias
 	dfBias= dfOutputPath.pivot_table(['field_dec_bias_applied','central_dec_bias_applied'],index=['theta_field_theta_central','n'],columns=['ite'])
-	dfBias_Var = dfBias.loc[idx[:,0:params['N']],idx['field_dec_bias_applied',:]].std(level='theta_field_theta_central')
+	# dfBias_Var = dfBias.loc[idx[:,0:params['N']],idx['field_dec_bias_applied',:]].std(level='theta_field_theta_central')
+	dfBias_Var = dfBias.loc[idx[:,0:params['N']],idx['field_dec_bias_applied',:]].groupby(level='theta_field_theta_central').std()
 
 	
 	maxVarIndex = dfBias_Var.max(axis=1).idxmax()

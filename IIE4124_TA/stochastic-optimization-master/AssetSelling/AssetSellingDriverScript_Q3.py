@@ -21,7 +21,8 @@ if __name__ == "__main__":
     param_list = list(params)
     sheet2 = pd.read_excel("asset_selling_policy_parameters.xlsx", sheet_name="Sheet2")
     sheet3 = pd.read_excel("asset_selling_policy_parameters.xlsx", sheet_name="Sheet3")
-    biasdf = pd.read_excel("asset_selling_policy_parameters.xlsx", sheet_name="Sheet4")
+    # biasdf = pd.read_excel("asset_selling_policy_parameters.xlsx", sheet_name="Sheet4") # 원래 
+    biasdf = pd.read_excel("asset_selling_policy_parameters.xlsx", sheet_name="Sheet4", index_col=0) # 수정
     
     
    

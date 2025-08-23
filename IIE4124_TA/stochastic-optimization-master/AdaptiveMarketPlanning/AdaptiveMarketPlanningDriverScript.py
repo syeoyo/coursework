@@ -23,12 +23,20 @@ if __name__ == "__main__":
 	file = 'Base parameters.xlsx'
 	raw_data = pd.ExcelFile(file)
 	data = raw_data.parse('parameters')
-	cost = data.iat[0, 2]
-	trial_size = np.rint(data.iat[1, 2]).astype(int)
-	price = data.iat[2, 2]
-	theta_step = data.iat[3, 2]
-	T = data.iat[4, 2]
-	reward_type = data.iat[5, 2]
+ 
+	# cost = data.iat[0, 2]
+	# trial_size = np.rint(data.iat[1, 2]).astype(int)
+	# price = data.iat[2, 2]
+	# theta_step = data.iat[3, 2]
+	# T = data.iat[4, 2]
+	# reward_type = data.iat[5, 2]
+ 
+	cost = data.iat[1, 2]      
+	trial_size = np.rint(data.iat[2, 2]).astype(int)
+	price = data.iat[3, 2]     
+	theta_step = data.iat[4, 2] 
+	T = data.iat[5, 2]         
+	reward_type = data.iat[6, 2]
 	
 	# initialize model and store ordered quantities in an array
 	M = AdaptiveMarketPlanningModel(state_names, decision_names, init_state, T,reward_type, price, cost)
