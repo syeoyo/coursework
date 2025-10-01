@@ -3,7 +3,7 @@ Asset selling model class
 Adapted from code by Donghun Lee (c) 2018
 
 """
-from collections import namedtuple
+from collections import namedtuple, deque
 import numpy as np
 import pandas as pd
 
@@ -12,8 +12,7 @@ class AssetSellingModel():
     Base class for model
     """
 
-    def __init__(self, state_variable, decision_variable, state_0, exog_0,T=10, exog_info_fn=None, transition_fn=None,
-                 objective_fn=None, seed=20180529):
+    def __init__(self, state_variable, decision_variable, state_0, exog_0,T=10, exog_info_fn=None, transition_fn=None, objective_fn=None, seed=20180529):
         """
         Initializes the model
 
@@ -38,11 +37,6 @@ class AssetSellingModel():
         #print("\n")
         #print(self.initial_args)
 
-        
-
-
-
-        
 
         self.prng = np.random.RandomState(seed)
         self.initial_state = state_0
@@ -52,11 +46,19 @@ class AssetSellingModel():
         self.state = self.build_state(state_0)
         self.Decision = namedtuple('Decision', decision_variable)
         self.objective = 0.0
-
-
-
-
-
+        
+        # 추가: 가격 이력 저장
+        self.price_history = deque([state_0['price']], maxlen=3)
+    
+    # 추가: 시계열 예측 함수 추가
+    def forecast_price(self):
+        prices = list(self.price_history)
+        if len(prices) >= 3:
+            return 0.7 * prices[-1] + 0.2 * prices[-2] + 0.1 * prices[-3]
+        elif len(prices) == 2:
+            return 0.7 * prices[-1] + 0.2 * prices[-2] + 0.1 * prices[-1]
+        else:
+            return prices[-1]
 
     def build_state(self, info):
         """
@@ -106,16 +108,11 @@ class AssetSellingModel():
          
         print("coin ",coin," curr_bias ",self.state.bias," new_bias ",new_bias)
 
-    
-       
-
-
-
         updated_price = self.state.price + self.prng.normal(bias, exog_params['Variance'])
         # we account for the fact that asset prices cannot be negative by setting the new price as 0 whenever the
         # random process gives us a negative price
         new_price = 0.0 if updated_price < 0.0 else updated_price
-        return {"price": new_price,"bias":new_bias}
+        return {"price": new_price,"bias": new_bias}
 
     def transition_fn(self, decision, exog_info):
         """
@@ -154,4 +151,5 @@ class AssetSellingModel():
         self.objective += self.objective_fn(decision, exog_info)
         exog_info.update(self.transition_fn(decision, exog_info))
         self.state = self.build_state(exog_info)
-
+        # 추가: 가격 이력 업데이트
+        self.price_history.append(self.state.price)

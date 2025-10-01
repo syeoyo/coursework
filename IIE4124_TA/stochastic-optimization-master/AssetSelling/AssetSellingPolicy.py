@@ -48,6 +48,34 @@ class AssetSellingPolicy():
         new_decision = {'sell': 1, 'hold': 0} if state.price < lower_limit else {'sell': 0, 'hold': 1}
         return new_decision
 
+    # 새로운 시계열 정책
+    def time_series_policy(self, state, model, info_tuple):
+        """
+        시계열 정책 (공식 2.29):
+        X^(time-series)(S_t|θ) = {
+            1  if p_t < p̃_t - θ OR p_t > p̃_t + θ,
+            1  if t = T,
+            0  otherwise.
+        }
+        """
+        theta = info_tuple[0]
+        
+        # 첫 시점에서는 예측 불가능하므로 보유
+        if len(model.price_history) < 2:
+            return {'sell': 0, 'hold': 1}
+        
+        forecast = model.forecast_price()  # p̃_t
+        current_price = state.price        # p_t
+        
+        # 공식의 첫 번째 조건: p_t < p̃_t - θ OR p_t > p̃_t + θ
+        if current_price < forecast - theta or current_price > forecast + theta:
+            new_decision = {'sell': 1, 'hold': 0}
+        else:
+            # 공식의 세 번째 조건: otherwise는 0 (hold)
+            new_decision = {'sell': 0, 'hold': 1}
+        
+        return new_decision
+
     def high_low_policy(self, state, info_tuple):
         """
         this function implements the high-low policy
@@ -101,6 +129,8 @@ class AssetSellingPolicy():
                 decision = self.high_low_policy(model_copy.state, p.high_low)
             elif policy == "track":
                 decision = {'sell': 0, 'hold': 1} if time == 0 else self.track_policy(model_copy.state, p.track)
+            elif policy == "time_series":  # 새로 추가
+                decision = self.time_series_policy(model_copy.state, model_copy, p.time_series)
 
             if (time == model_copy.initial_args['T'] - 1):
                  decision = {'sell': 1, 'hold': 0}  

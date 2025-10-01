@@ -39,13 +39,13 @@ if __name__ == "__main__":
     print("exog_params ",exog_params)
    
     # initialize the model and the policy
-    policy_names = ['sell_low', 'high_low', 'track']
+    policy_names = ['sell_low', 'high_low', 'track', 'time_series']
     state_names = ['price', 'resource','bias']
     init_state = {'price': initPrice, 'resource': 1,'bias':initBias}
     decision_names = ['sell', 'hold']
 
     
-    M = AssetSellingModel(state_names, decision_names, init_state,exog_params,T)
+    M = AssetSellingModel(state_names, decision_names, init_state, exog_params, T)
     P = AssetSellingPolicy(M, policy_names)
     t = 0
     prev_price = init_state['price']
@@ -54,7 +54,8 @@ if __name__ == "__main__":
     # make a policy_info dict object
     policy_info = {'sell_low': param_list[0],
                    'high_low': param_list[1],
-                   'track': param_list[2] + (prev_price,)}
+                   'track': param_list[2] + (prev_price,), 
+                   'time_series': (2.0,)}
     
     
     if (not policy_selected =='full_grid'):
@@ -90,6 +91,71 @@ if __name__ == "__main__":
         ax.set_xlabel('Iterations', labelpad=10)
         
         plt.show()
+        
+    # 시계열 정책 전용 분석
+    if policy_selected == 'time_series':
+        print("=== Time Series Policy Analysis ===")
+        
+        # θ 값 범위 설정
+        theta_values = np.linspace(0.5, 5.0, 20)
+        results = []
+        
+        for theta in theta_values:
+            print(f"\nTesting θ = {theta:.3f}")
+            
+            # 시계열 정책 정보 업데이트
+            policy_info_ts = policy_info.copy()
+            policy_info_ts['time_series'] = (theta,)
+            
+            # 여러 번 시뮬레이션
+            contributions = []
+            for iteration in range(nIterations):
+                contribution = P.run_policy(param_list, policy_info_ts, 'time_series', 0)
+                contributions.append(contribution)
+            
+            avg_contribution = np.mean(contributions)
+            std_contribution = np.std(contributions)
+            results.append((theta, avg_contribution, std_contribution))
+            
+            print(f"θ={theta:.3f}: Average=${avg_contribution:.2f} ± {std_contribution:.2f}")
+        
+        # 최적 θ 찾기
+        optimal_result = max(results, key=lambda x: x[1])
+        optimal_theta, optimal_contrib, optimal_std = optimal_result
+        
+        print(f"\n=== Optimal Results ===")
+        print(f"Optimal θ: {optimal_theta:.3f}")
+        print(f"Optimal Average Contribution: ${optimal_contrib:.2f} ± {optimal_std:.2f}")
+        
+        # 결과 시각화
+        import matplotlib.pyplot as plt
+        
+        thetas, contribs, stds = zip(*results)
+        
+        plt.figure(figsize=(12, 5))
+        
+        plt.subplot(1, 2, 1)
+        plt.errorbar(thetas, contribs, yerr=stds, fmt='o-', capsize=5)
+        plt.xlabel('Theta (θ)')
+        plt.ylabel('Average Contribution ($)')
+        plt.title('Time Series Policy Performance')
+        plt.grid(True, alpha=0.3)
+        
+        # 최적점 표시
+        plt.plot(optimal_theta, optimal_contrib, 'ro', markersize=10, 
+                label=f'Optimal: θ={optimal_theta:.3f}')
+        plt.legend()
+        
+        plt.subplot(1, 2, 2)
+        plt.plot(thetas, contribs, 'b-o')
+        plt.axvspan(thetas[0], thetas[len(thetas)//3], alpha=0.2, color='red', label='Over-reactive')
+        plt.axvspan(thetas[len(thetas)//3], thetas[2*len(thetas)//3], alpha=0.2, color='green', label='Optimal')
+        plt.axvspan(thetas[2*len(thetas)//3], thetas[-1], alpha=0.2, color='blue', label='Under-reactive')
+        plt.xlabel('Theta (θ)')
+        plt.ylabel('Average Contribution ($)')
+        plt.title('Policy Behavior Zones')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
         
     else:
         # obtain the theta values to carry out a full grid search
