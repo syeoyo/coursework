@@ -1,0 +1,335 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=0.7in}
+\usepackage{mathtools}
+\usepackage{lscape}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\usepackage{kotex}
+\usepackage{fontspec}
+\setmainfont{IBMPlexSans}[
+    Path = ./IBMPlexSans/,
+    Extension = .ttf,
+    UprightFont = *-Regular,
+    BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+    BoldItalicFont = *-BoldItalic
+]
+
+\usepackage{amsthm}
+\usepackage[most]{tcolorbox}
+
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\vspace{1ex}\pushQED{\qed}\normalfont
+  \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\hskip\labelsep\bfseries #1\@addpunct{.}]%
+}{%
+  \popQED\endtrivlist\@endpefalse
+  \addvspace{1ex}%
+}
+\makeatother
+
+% ---- Custom style for unnumbered, clean theorem box ----
+\tcbset{
+  myboxstyle/.style={
+    colback=gray!10,       % 회색 배경
+    colframe=gray!60,      % 테두리 색
+    boxrule=0.4pt,         % 테두리 두께
+    arc=1.5mm,               % 모서리 둥글게
+    left=6pt, right=6pt, top=6pt, bottom=6pt,
+  }
+}
+
+\newtcolorbox{stabilitybox}[1]{myboxstyle, title=\textbf{#1}, fonttitle=\bfseries\color{black}}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem{remark}{Remark}
+
+\newcounter{remarkctr}
+\renewenvironment{remark}[1][]{%
+  \refstepcounter{remarkctr}% 카운터 증가
+  \par\vspace{1ex}\noindent
+  \textbf{Remark~\theremarkctr.}%
+  \ifx#1\empty\else\ \textbf{#1}\fi\par
+}{\vspace{1ex}}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE\bfseries IDO6001 Homework 03 \par}
+    \vspace{1em}
+    {\large 장서현 (학번: 2025324096) \par}
+\end{center}
+\vspace{0.5em}
+
+% -------------------------------------------------------------------------------------
+\section{Problem 1}
+다음의 $(1||\sum_{i=1}^n T_i)$ 문제를 (1) 선형정수계획법으로 모델링하고, (2) 선형계획이완(LP relaxation) 이용한 하한경계를 사용하여 분지한계법으로 깊이 탐색과 너비 탐색 모두 사용하여 푸시오. 
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{c|ccccc}
+    \hline
+    작업 & 1 & 2 & 3 & 4 & 5 \\ \hline
+    가공시간 & 4 & 3 & 7 & 2 & 2 \\
+    납기 & 5 & 6 & 8 & 8 & 17 \\ \hline
+    \end{tabular}
+    \end{table}
+
+\subsection{선형정수계획법 모델}
+\begin{stabilitybox}{Notation}
+    \setlist[itemize]{leftmargin=2em, itemsep=1.5pt}
+    \begin{minipage}[t]{0.51\linewidth}
+        \textbf{Set and Indices}
+        \begin{itemize}
+            \item $N = \{1,2,3,4,5\}$: 작업의 집합
+            \item $i \in N$: 작업의 인덱스
+            \item $T = \{1, \dots, |T|\}$: 시점의 집합
+            \item $t, s \in T$: 시점의 인덱스
+            \begin{itemize}
+                \item 각 시점 t는 시간구간 $[t-1, t)$의 시작 시점을 의미
+            \end{itemize}
+        \end{itemize}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\linewidth}
+        \textbf{Decision Variables}
+        \begin{itemize}
+            \item $x_{it}$: 작업 $i$가 시점 $t$에 시작하면 1, 아니면 0
+        \end{itemize}
+        \textbf{Parameters}
+        \begin{itemize}
+            \item $p_i$: 작업 $i$의 가공 시간
+            \item $d_i$: 작업 $i$의 납기
+            \item $|T| = \sum p_i$: 최대 허용 시간
+            \item $\xi_{it}$: 작업 $i$를 시점 $t$에 시작할 경우 발생하는 지연시간
+            \begin{itemize}
+                \item $\xi_{it} = \max(0, t-1 + p_i - d_i) \quad \forall i \in N, t \in T$
+            \end{itemize}
+        \end{itemize}
+    \end{minipage}
+\end{stabilitybox}
+
+\subsubsection*{Model Formulation using Time-Indexed Variables}
+\begin{subequations}
+    \begin{align}
+        \text{min} \quad & \sum_{i \in N} \sum_{t=1}^{|T|-p_i+1} \xi_{it}\, x_{it} \label{1a}\\
+        \text{s.t.} \quad & \sum_{t=1}^{|T|-p_i+1} x_{it} = 1  & \forall i \in N \label{1b}\\
+        & \sum_{i \in N} \sum_{s=\max(1, t-p_i+1)}^{t} x_{is} \le 1 & \forall t \in T \label{1c}\\
+        & x_{it} \in \{0, 1\} & \forall i \in N, t \in T \label{1d}
+    \end{align}
+\end{subequations}
+\vspace{0.05em}
+\begin{itemize} [leftmargin=1em, itemsep=0pt, topsep=1pt]
+    \item \eqref{1a} 총 지연 시간의 합을 최소화하는 목적함수
+    \item \eqref{1b} 모든 작업 $i$는 스케줄링 기간($T$) 내에 한 번만 시작되어야 함 
+    \item \eqref{1c} 모든 시점 $t$에 기계는 최대 1개의 작업만 처리할 수 있음
+    \item \eqref{1d} $x_{it}$가 시작 시점을 결정하는 이진 변수임을 정의
+    \end{itemize}
+\subsubsection*{LP relaxed Model Formulation}
+\eqref{1a} $\sim$ \eqref{1c}는 동일하게 유지되며, \eqref{1d}가 아래의 제약식 \eqref{1e}으로 변환
+\begin{equation*}
+    0 \le x_{it} \le 1 \qquad \forall i \in N, t \in T \tag{1e} \label{1e}
+\end{equation*}
+
+\newpage
+
+\begin{stabilitybox}{Approach}
+    \begin{itemize}[leftmargin=1em]
+        \item 분지 조건: 현재 노드의 LP Relaxation을 푼 해에 $0 < x_{it} < 1$인 변수가 하나라도 존재할 때,
+        \begin{enumerate}
+            \item 실수 값을 갖는 모든 $x_{it}$ 중에서, 시점 $t$가 가장 빠른 $x_{it}$
+            \item 규칙 1에서 동일한 시점 $t$에 대해 변수가 여러 개 존재할 시, 작업 $i$의 납기가 가장 빠른 $x_{it}$
+        \end{enumerate}
+        \item 하한경계: 각 노드에서 추가된 제약을 포함한 LP Relaxation의 목적함수 최적값
+        \item 가지치기 조건: 
+        \begin{enumerate}
+            \item Bound: 현재 노드의 LB $\ge$ IC
+            \item Integral: 현재 노드의 LB 해가 모든 $x_{it}$에 대해 정수해
+            \item Infeasible: 현재 노드의 LP Relaxation 문제가 infeasible
+        \end{enumerate}
+        \item 초기 IC = $|T|$ = 18 
+    \end{itemize}
+\end{stabilitybox}
+
+\subsection{깊이탐색을 활용한 분지한계법}
+
+\subsection{너비탐색을 활용한 분지한계법} 
+
+% -------------------------------------------------------------------------------------
+\newpage
+\section{Problem 2}
+다음의 $(1|s_{ij}|C_{max})$ 문제를 다음의 작업준비시간을 고려하여 (1) 선형정수계획법으로 모델링하고, (2) 선형계획이완(LP relaxation) 이용한 하한경계를 사용하여 분지한계법으로 깊이 탐색과 너비 탐색 모두 사용하여 푸시오. 
+\begin{table}[h!]
+\centering
+\begin{tabular}{c|cccc}
+\hline
+ & 1 & 2 & 3 & 4 \\ \hline
+1 & -- & 30 & 50 & 90 \\
+2 & 40 & -- & 20 & 80 \\
+3 & 30 & 30 & -- & 60 \\
+4 & 20 & 15 & 10 & -- \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{선형정수계획법 모델}
+\begin{stabilitybox}{Notation}
+    \setlist[itemize]{leftmargin=2em, itemsep=1.5pt}
+    \begin{minipage}[t]{0.58\linewidth}
+        \textbf{Set and Indices}
+        \begin{itemize}
+            \item $N = \{1, 2, 3, 4\}$: 실제 작업 집합
+            \item $N_0 = \{0, 1, 2, 3, 4\}$: 가상 작업을 포함한 전체 작업 집합
+            \item $i, j \in N_0$: 노드를 나타내는 인덱스
+        \end{itemize}
+        \textbf{Decision Variables}
+        \begin{itemize}
+            \item $x_{ij}$: 작업 $i$가 작업 $j$ 바로 직전에 수행되면 1, 아니면 0 ($i \ne j$)
+            \item $u_i$: 작업 $i$의 순서를 나타내는 보조 변수 ($i \in N$)
+        \end{itemize}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.4\linewidth}
+        \textbf{Parameters}
+        \begin{itemize}
+            \item $s_{ij}$: 작업 $i$에서 작업 $j$로의 작업 준비 시간
+            \begin{itemize}
+                \item $s_{0j} = 0 \quad (\forall j \in N)$
+                \item $s_{i0} = 0 \quad (\forall i \in N)$
+            \end{itemize}
+            \item $n = |N| = 4$: 실제 작업의 수
+        \end{itemize}
+    \end{minipage}
+\end{stabilitybox}
+
+\subsubsection*{Model Formulation using TSP Framework}
+\begin{subequations}
+    \begin{align}
+        \text{min} \quad & \sum_{i \in N_0} \sum_{j \in N_0, j \ne i} s_{ij} x_{ij} \label{2a}\\
+        \text{s.t.} \quad
+        & \sum_{j \in N_0, j \ne i} x_{ij} = 1 & \forall i \in N_0 \label{2b}\\
+        & \sum_{i \in N_0, i \ne j} x_{ij} = 1 & \forall j \in N_0 \label{2c}\\
+        & u_i - u_j + n x_{ij} \le n - 1 & \forall i, j \in N, i \ne j \label{2d}\\
+        & 1 \le u_i \le n & \forall i \in N \label{2e} \\
+        & x_{ij} \in \{0, 1\} & \forall i, j \in N_0, i \ne j \label{2f}
+    \end{align}
+\end{subequations}
+\vspace{0.05em}
+\begin{itemize} [leftmargin=1em, itemsep=0pt, topsep=1pt]
+    \item \eqref{2a} $C_{max}$는 모든 작업의 총 가공 시간과 모든 총 작업 준비 시간($\sum s_{ij}$)의 합이며, 총 가공 시간은 상수이기 떄문에, 목적함수는 총 작업 준비 시간을 최소화하는 것으로 설계
+    \item \eqref{2b} 모든 작업 $i \in N_0$는, 스케줄 상에서 자신 바로 뒤에 위치할 단 하나의 작업 $j \in N_0$를 가져야 함
+    \item \eqref{2c} 모든 작업 $j \in N_0$는, 스케줄 상에서 자신 바로 앞에 위치할 단 하나의 작업 $i \in N_0$를 가져야 함
+    \item \eqref{2d} 서브투어 제거 제약: $x_{ij}=1$일 때 $u_i + 1 \le u_j$를 강제하여 15, 경로를 따라 $u$ 값이 증가하게 함으로써 $N$ 내의 닫힌 서브투어를 방지
+    \item \eqref{2e} 스케줄에서 작업 $i$의 순서 $u_i$의 범위 정의
+    \item \eqref{2f} $x_{ij}$가 이진 변수임을 정의
+\end{itemize}
+
+\subsubsection*{LP relaxed Model Formulation}
+\eqref{2a} $\sim$ \eqref{2e}는 동일하게 유지되며, \eqref{2f}가 아래의 제약식 \eqref{2g}으로 변환
+\begin{equation*}
+    0 \le x_{ij} \le 1 \qquad \forall i, j \in N_0, i \ne j \tag{2g} \label{2g}
+\end{equation*}
+
+\newpage
+\begin{stabilitybox}{Approach}
+    \begin{itemize}[leftmargin=1em]
+        \item 분지 조건: 현재 노드의 LP Relaxation을 푼 해에 $0 < x_{it} < 1$인 변수가 하나라도 존재할 때,
+        \begin{enumerate}
+            \item 실수 값을 갖는 모든 $x_{ij}$ 변수 중에서, 그 값이 0.5에 가장 가까운 $x_{ij}$
+            \item 규칙 1에서 동률(tie)이 발생할 경우, 준비 시간($s_{ij}$)이 가장 작은 $x_{ij}$
+        \end{enumerate}
+        \item 하한경계: 각 노드에서 추가된 제약을 포함한 LP Relaxation의 목적함수 최적값
+        \item 가지치기 조건: 
+        \begin{enumerate}
+            \item Bound: 현재 노드의 LB $\ge$ IC
+            \item Integral: 현재 노드의 LB 해가 모든 $x_{it}$에 대해 정수해
+            \item Infeasible: 현재 노드의 LP Relaxation 문제가 infeasible
+        \end{enumerate}
+        \item 초기 IC = 70: CUT 기반 설정 (4 $\to$ 3 $\to$ 1 $\to$ 2)
+    \end{itemize}
+\end{stabilitybox}
+
+\subsection{깊이탐색을 활용한 분지한계법}
+분지조건, 하한경계 명시
+
+
+\subsection{너비탐색을 활용한 분지한계법} 
+분지조건, 하한경계 명시
+
+
+% -------------------------------------------------------------------------------------
+\newpage
+\section*{Appendix - Code Implementation}
+
+    
+\end{document}
+
+% \begin{stabilitybox}{Notation}
+%     \setlist[itemize]{leftmargin=2em, itemsep=1.5pt}
+%     \begin{minipage}[t]{0.4\linewidth}
+%         \textbf{Set and Indices}
+%         \begin{itemize}
+%             \item $N = \{1, 2, 3, 4, 5\}$: 작업의 집합
+%             \item $j, k \in N$: 작업을 나타내는 인덱스
+%         \end{itemize}
+%         \textbf{Parameters}
+%         \begin{itemize}
+%             \item $p_j$: 작업 $j$의 가공 시간
+%             \item $d_j$: 작업 $j$의 납기 
+%             \item $M = 2\sum_{j\in N} p_j$: 양의 상수
+%         \end{itemize}
+%     \end{minipage}
+%     \hfill
+%     \begin{minipage}[t]{0.58\linewidth}
+%         \textbf{Decision Variables}
+%         \begin{itemize}
+%             \item $C_j$: 작업 $j$의 완료 시간
+%             \item $T_j$: 작업 $j$의 지연 시간
+%             \item $y_{jk}$: 작업 $j$가 작업 $k$보다 먼저 처리되면 1, 아니면 0 ($j < k$)
+%         \end{itemize}
+%     \end{minipage}
+% \end{stabilitybox}
+
+% \subsubsection*{Model Formulation using Time-Indexed Variables}
+% \begin{subequations}
+%     \begin{align}
+%         \text{min} \quad & \sum_{j \in N} T_j \label{1a}\\
+%         \text{s.t.} \quad
+%         & C_j \ge p_j & \forall j \in N \label{1b}\\
+%         & C_j + p_k \le C_k + M(1 - y_{jk}) & \forall j, k \in N, j < k \label{1c}\\
+%         & C_k + p_j \le C_j + M y_{jk} & \forall j, k \in N, j < k \label{1d}\\
+%         & T_j \ge C_j - d_j & \forall j \in N \label{1e}\\
+%         & C_j, T_j \ge 0 & \forall j \in N \label{1f}\\
+%         & y_{jk} \in \{0, 1\} & \forall j, k \in N, j < k \label{1g}
+%     \end{align}
+% \end{subequations}
+% \vspace{0.05em}
+% \begin{itemize} [leftmargin=1em, itemsep=0pt, topsep=1pt]
+%     \item \eqref{1a} 총 지연 시간의 합을 최소화하는 목적 함수
+%     \item \eqref{1b} 작업 $j$의 완료 시간은 최소한 자신의 가공 시간($p_j$)보다 커야 함을 보장
+%     \item \eqref{1c} \eqref{1d} 두 작업 $j, k$의 순서를 강제하는 disjunctive constraints
+%     \begin{itemize}[itemsep=0pt, topsep=1pt]
+%         \item $y_{jk}=1$ ($j \to k$)이면, \eqref{1c}가 $C_j + p_k \le C_k$가 되어 $k$는 $j$가 끝난 후에만 완료될 수 있음을 강제
+%         \item $y_{jk}=0$ ($k \to j$)이면, \eqref{1d}가 $C_k + p_j \le C_j$가 되어 $j$는 $k$가 끝난 후에만 완료될 수 있음을 강제
+%     \end{itemize}
+%     \item \eqref{1e} 지연 시간 $T_j$를 $T_j = \max(0, C_j - d_j)$로 정의하는 제약 중 일부
+%     \item \eqref{1f} 완료 시간과 지연 시간은 음수가 될 수 없음
+%     \item \eqref{1g} $y_{jk}$가 순서를 결정하는 이진 변수임을 정의
+% \end{itemize}
+
+% \subsubsection*{LP relaxed Model Formulation}
+% \eqref{1a} $\sim$ \eqref{1f}는 동일하게 유지되며, \eqref{1g}가 아래의 제약식 \eqref{1h}으로 변환
+% \begin{equation*}
+%     0 \le y_{jk} \le 1 \qquad \forall j, k \in N, j < k \tag{1h} \label{1h}
+% \end{equation*}

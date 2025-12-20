@@ -1,0 +1,374 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=0.7in}
+\usepackage{mathtools}
+\usepackage{lscape}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\usepackage{kotex}
+\usepackage{fontspec}
+\setmainfont{IBMPlexSans}[
+    Path = ./IBMPlexSans/,
+    Extension = .ttf,
+    UprightFont = *-Regular,
+    BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+    BoldItalicFont = *-BoldItalic
+]
+
+\usepackage{amsthm}
+\usepackage[most]{tcolorbox}
+
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\vspace{1ex}\pushQED{\qed}\normalfont
+  \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\hskip\labelsep\bfseries #1\@addpunct{.}]%
+}{%
+  \popQED\endtrivlist\@endpefalse
+  \addvspace{1ex}%
+}
+\makeatother
+
+% ---- Custom style for unnumbered, clean theorem box ----
+\tcbset{
+  myboxstyle/.style={
+    colback=gray!10,       % 회색 배경
+    colframe=gray!60,      % 테두리 색
+    boxrule=0.4pt,         % 테두리 두께
+    arc=1.5mm,               % 모서리 둥글게
+    left=6pt, right=6pt, top=6pt, bottom=6pt,
+  }
+}
+
+\newtcolorbox{stabilitybox}[1]{myboxstyle, title=\textbf{#1}, fonttitle=\bfseries\color{black}}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem{remark}{Remark}
+
+\newcounter{remarkctr}
+\renewenvironment{remark}[1][]{%
+  \refstepcounter{remarkctr}% 카운터 증가
+  \par\vspace{1ex}\noindent
+  \textbf{Remark~\theremarkctr.}%
+  \ifx#1\empty\else\ \textbf{#1}\fi\par
+}{\vspace{1ex}}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE\bfseries IDO6001 Homework 04 \par}
+    \vspace{1em}
+    {\large 장서현 (학번: 2025324096) \par}
+\end{center}
+\vspace{0.5em}
+
+\section*{Part 1: Mathematical Formulation}
+
+\subsection*{Problem 1.1 }
+
+\subsubsection*{Model Formulation using Completion Time Variables}
+$(1 \mid prec \mid \sum w_j T_j)$의 경우, 목적함수($\sum w_j T_j$)와 제약 조건이 모두 완료시간($C_j$)을 매개로 정의되므로, 완료시간 변수를 사용하는 것이 가장 직관적이고 간결하다고 판단했다. 특히 Precedence Constraints (job $i \to j$)의 경우, $C_j \ge C_i + p_j$ 형태의 단순한 선형 부등식만으로 처리할 수 있어 구현이 효율적이다. 
+\vspace{0.5em}
+
+\begin{stabilitybox}{Notation}
+  \setlist[itemize]{leftmargin=2em, itemsep=1.5pt}
+  \begin{minipage}[t]{0.49\linewidth}
+      \textbf{Sets and Indices}
+      \begin{itemize}
+          \item $N = \{1, 2, ..., n\}$: Set of jobs
+          \item $i, j \in N$: Indices for jobs
+          \item $prec$: Set of precedence pairs $(i, j)$ where job $i$ must precede job $j$
+      \end{itemize}
+      \textbf{Parameters}
+      \begin{itemize}
+          \item $p_j$: Processing time of job $j$
+          \item $d_j$: Due date of job $j$
+          \item $w_j$: Weight of job $j$
+          \item $M$: A sufficiently large number (Big-M)
+      \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.49\linewidth}
+      \textbf{Decision Variables}
+      \begin{itemize}
+          \item $C_j$: Completion time of job $j$ 
+          \item $T_j$: Tardiness of job $j$
+          \item $ y_{ij} = \begin{cases} 1, & \text{if job } i \text{ precedes job } j \\ 0, & \text{otherwise} \end{cases} $
+          \item[]: Binary variable defined for unordered pairs ($(i,j), (j,i) \notin prec$ and $i<j$)
+      \end{itemize}
+  \end{minipage}
+\end{stabilitybox}
+
+\vspace{1em}
+
+\textbf{Mathematical Model}
+\begin{subequations}
+  \begin{align}
+    \text{Minimize } \quad & \sum_{j \in N} w_j T_j \label{1a}\\
+    \text{s.t.} \quad 
+    & T_j \geq C_j - d_j & \forall j \in N \label{1b}\\
+    & T_j \geq 0 & \forall j \in N  \label{1c}\\
+    & C_j \geq p_j & \forall j \in N \label{1d}\\
+    & C_j \geq C_i + p_j & \forall (i, j) \in prec \label{1e}\\
+    & C_j \geq C_i + p_j - M(1 - y_{ij}) & \forall i, j \in N, i < j, (i,j), (j,i) \notin prec \label{1f}\\
+    & C_i \geq C_j + p_i - M y_{ij} & \forall i, j \in N, i < j, (i,j), (j,i) \notin prec \label{1g}\\
+    & C_j \geq 0 & \forall j \in N \label{1h}\\
+    & y_{ij} \in \{0, 1\} & \forall i, j \in N, i < j, (i,j), (j,i) \notin prec \label{1i}
+  \end{align}
+\end{subequations}
+
+\vspace{1em}
+
+\textbf{Constraints}
+\begin{itemize}[itemsep=0pt]
+  \item \eqref{1b} $\sim$ \eqref{1c}: Tardiness Constraints
+  \item \eqref{1d}: Basic Completion Time Constraints
+  \item \eqref{1e}: Precedence Constraints for pairs $(i, j)$ defined in the precedence set
+  \item \eqref{1f} $\sim$ \eqref{1g}: Disjunctive Constraints for unordered pairs $(i, j)$ where no precedence relationship exists
+  \item \eqref{1h} $\sim$ \eqref{1i}: Variable Domains
+\end{itemize}
+
+\vspace{1em}
+
+\textbf{Code Implementation}
+\begin{itemize}
+  \item Single machine with precedence.ipynb 코드 및 결과 첨부
+\end{itemize}
+
+
+\subsection*{Problem 1.2}
+
+\subsubsection*{Model Formulation using Assignment and Positional Date Variables}
+$(1 \mid s_{ij} \mid \sum w_j T_j)$의 경우, Sequence-dependent setup time $s_{ij}$이 작업 $i$ 바로 뒤에 $j$가 오는 경우에만 발생하므로, “즉시 인접” 관계를 명확히 표현할 수 있어야 한다. Assignment/Position 변수는 각 작업의 순서를 위치로 직접 배정하여, 인접한 두 위치 사이에서 setup time을 반영할 수 있다고 판단했다.
+\vspace{0.5em}
+
+\begin{stabilitybox}{Notation}
+  \setlist[itemize]{leftmargin=2em, itemsep=1.5pt}
+  \begin{minipage}[t]{0.43\linewidth}
+      \textbf{Sets and Indices}
+      \begin{itemize}
+          \item $N = \{1, 2, ..., n\}$: Set of jobs
+          \item $K = \{1, 2, ..., n\}$: Set of positions
+          \item $i, j \in N$: Indices for jobs
+          \item $k \in K$: Index for positions
+      \end{itemize}
+      \textbf{Parameters}
+      \begin{itemize}
+          \item $p_j$: Processing time of job $j$
+          \item $d_j$: Due date of job $j$
+          \item $w_j$: Weight of job $j$
+          \item $s_{ij}$: setup time if job $i$ precedes job $j$
+          \item $M$: A sufficiently large number (Big-M)
+      \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.56\linewidth}
+      \textbf{Decision Variables}
+      \begin{itemize}
+        \item $u_{jk} = \begin{cases} 1, & \text{if job } j \text{ is assigned at position } k \\ 0, & \text{otherwise} \end{cases}$
+        \item $\gamma_k$: Completion time of position $k$
+        \item $T_j$: Tardiness of job
+        \item $z_{ijk} = \begin{cases} 1, & \text{if job } i \text{ is at pos } k-1 \text{ and job } j \text{ is at pos } k \\ 0, & \text{otherwise} \end{cases}$
+      \end{itemize}
+  \end{minipage}
+\end{stabilitybox}
+
+\vspace{1em}
+
+\textbf{Mathematical Model}
+\begin{subequations}
+  \begin{align}
+    \text{Minimize } \quad & \sum_{j \in N} w_j T_j \label{2a}\\
+    \text{s.t.} \quad 
+      & \sum_{k \in K} u_{jk} = 1 & \forall j \in N \label{2b} \\
+      & \sum_{j \in N} u_{jk} = 1 & \forall k \in K \label{2c} \\
+      & \gamma_k \geq \gamma_{k-1} + \sum_{j \in N} p_j u_{jk} + \sum_{i \in N} \sum_{j \in N, j \ne i} s_{ij} z_{ijk} & \forall k \in K \setminus \{1\} \label{2d} \\
+      & z_{ijk} \geq u_{i, k-1} + u_{jk} - 1, \quad z_{ijk} \leq u_{i, k-1}, \quad z_{ijk} \leq u_{jk} & \forall i, j \in N, \forall k \in K \setminus \{1\} \label{2e} \\
+      & \gamma_1 \geq \sum_{j \in N} (s_{0j} + p_j) u_{j1} \label{2f} \\
+      & T_j \geq \gamma_k - d_j - M(1 - u_{jk}) & \forall j \in N, \forall k \in K \label{2g}\\
+      & T_j \geq 0 & \forall j \in N \label{2h}\\
+      & u_{jk}, z_{ijk} \in \{0, 1\} & \forall i, j \in N, \forall k \in K \label{2i}\\
+      & \gamma_k \geq 0 & \forall k \in K \label{2j}
+  \end{align}
+\end{subequations}
+
+\vspace{0.5em}
+
+\textbf{Constraints}
+\begin{itemize}[itemsep=0pt]
+  \item \eqref{2b}: Each job is assigned to exactly one position
+  \item \eqref{2c}: Each position is filled by exactly one job
+  \item \eqref{2d}: Calculates the completion time at position $k$ ($\gamma_k$)
+  \item \eqref{2e}: (Linearization Constraints) Forces $z_{ijk} = 1$ only if both $u_{i, k-1} = 1$ and $u_{jk} = 1$
+  \item \eqref{2f}: (Assuming $s_{0j}$ is the initial setup time) First Position Constraint
+  \item \eqref{2g} $\sim$ \eqref{2h}: Tardiness Constraints
+  \item \eqref{2i} $\sim$ \eqref{2j}: Variable Domains
+\end{itemize}
+
+\vspace{0.5em}
+
+  \textbf{Code Implementation}
+  \begin{itemize}
+    \item Single machine with setup time.ipynb 코드 및 결과 첨부
+  \end{itemize}
+
+
+\section*{Part 2: Simulation}
+\subsection*{Problem 2.1}
+\begin{figure}[h]
+  \centering 
+  \includegraphics[width=0.9\textwidth]{prob2.1_code.png} 
+  \caption{MST/MDD 구현 코드}
+  \label{fig:prob2_code} 
+\end{figure}
+
+\noindent 문제에서 제시한대로 machine 1에 MST 규칙, machine 2에 MDD 규칙을 적용하면 아래와 같은 스케줄을 얻을 수 있다.
+\begin{figure}[ht!]
+  \centering 
+  \includegraphics[width=0.6\textwidth]{prob2.1_machine.png} 
+  \caption{M1-MST, M2-MDD 적용 코드}
+  \label{fig:prob2_machine} 
+\end{figure}
+\vspace{-1em}
+\begin{figure}[ht!]
+  \centering 
+  \includegraphics[width=\textwidth]{prob2.1_gantt.png} 
+  \caption{M1-MST, M2-MDD 적용 스케줄}
+  \label{fig:prob2_gantt} 
+\end{figure}
+
+\noindent 같은 기계를 공유하는 작업 간에는 납기가 급한 순서(J4$\to$J1$\to$J2)로 처리가 이루어졌으나, Job 1은 긴 공정 경로와 최우선 순위 작업(J4) 대기로 인해 후반부에 완료되었으며, Job 3은 비경합 경로($M_1$ 시작)를 통해 납기 여유에도 불구하고 조기 완료되는 경로상의 이점을 보였다.
+
+\newpage
+\subsection*{Problem 2.2}
+CR, EDD, MST, MDD 규칙을 두 머신에 조합하여 총 12개의 시뮬레이션을 수행한 결과, 규칙조합마다 다른 스케줄을 도출하였지만, 아래와 같이 실질적으로 유사한 성능지표가 도출됨을 확인할 수 있다. (각 머신에 적용한 규칙을 (M1, M2)로 표현)
+
+\begin{itemize}
+  \item Case 1: (CR, EDD), (CR, MST), (CR, MDD), (EDD, CR), (EDD, MST), (EDD, MDD), (MST, EDD), (MST, MDD)
+\end{itemize} \vspace{-1em}
+\begin{table}[ht!] \centering
+  \resizebox{0.85\textwidth}{!}{
+  \begin{tabular}{@{}ccccl@{}}
+  \toprule
+  Makespan          & Mean Completion Time & Mean Flow Time     & Max Flow Time     & \multicolumn{1}{c}{Mean Lateness Time} \\ \midrule
+  17                & 12.75                & 12.75              & 17                & \multicolumn{1}{c}{1.25}               \\ \midrule
+  Max Lateness Time & Mean Tardiness Time  & Max Tardiness Time & Number of Overdue &                                        \\ \midrule
+  5                 & 2.75                 & 5                  & 3                 &                                        \\ \bottomrule
+  \end{tabular}
+  }
+\end{table} \vspace{-1.5em}
+\begin{figure}[ht!]
+  \centering 
+  \includegraphics[width=0.8\textwidth]{prob2.2_eddmst.png} \vspace{-0.5em}
+  \caption{(M1-EDD, M2-MST) 적용 스케줄 및 성능지표}
+\end{figure}
+\vspace{-1.5em}
+
+\begin{itemize}
+  \item Case 2: (MDD, CR), (MDD, EDD), (MDD, MST)
+\end{itemize} \vspace{-1em}
+\begin{table}[ht!] \centering
+  \resizebox{0.85\textwidth}{!}{
+  \begin{tabular}{@{}ccccl@{}}
+  \toprule
+  Makespan          & Mean Completion Time & Mean Flow Time     & Max Flow Time     & \multicolumn{1}{c}{Mean Lateness Time} \\ \midrule
+  17                & 12.75                & 12.75              & 17                & \multicolumn{1}{c}{0.75}               \\ \midrule
+  Max Lateness Time & Mean Tardiness Time  & Max Tardiness Time & Number of Overdue &                                        \\ \midrule
+  7                 & 2.25                 & 7                  & 3                 &                                        \\ \bottomrule
+  \end{tabular}
+  }
+\end{table}\vspace{-1.5em}
+\begin{figure}[ht!]
+  \centering 
+  \includegraphics[width=0.8\textwidth]{prob2.2_mddedd.png} \vspace{-0.5em}
+  \caption{(M1-MDD, M2-EDD) 적용 스케줄 및 성능지표}
+\end{figure}
+\vspace{-1.5em}
+
+\begin{itemize}
+  \item Case 3: (MST, CR)
+\end{itemize} \vspace{-1em}
+\begin{table}[ht!] \centering
+  \resizebox{0.85\textwidth}{!}{
+  \begin{tabular}{@{}ccccl@{}}
+  \toprule
+  Makespan          & Mean Completion Time & Mean Flow Time     & Max Flow Time     & \multicolumn{1}{c}{Mean Lateness Time} \\ \midrule
+  16                & 12.75                & 12.75              & 16                & \multicolumn{1}{c}{1.25}               \\ \midrule
+  Max Lateness Time & Mean Tardiness Time  & Max Tardiness Time & Number of Overdue &                                        \\ \midrule
+  4                 & 2.75                 & 4                  & 3                 &                                        \\ \bottomrule
+  \end{tabular}
+  }
+\end{table}\vspace{-1.5em}
+\begin{figure}[ht!]
+  \centering 
+  \includegraphics[width=0.8\textwidth]{prob2.2_mstcr.png} \vspace{-0.5em}
+  \caption{(M1-MST, M2-CR) 적용 스케줄 및 성능지표}
+\end{figure}
+\vspace{-1.5em}
+
+\newpage
+\begin{remark}
+\noindent Case 1과 Case 2는 거의 유사한 성능지표 값이 도출되었지만, Case 3 (MST, CR) 조합만이 Makespan 16, Max Tardiness 4라는 유의미하게 다른 결과를 도출하였다. (EDD, CR)이나 (MDD, CR)과 같이 M2에 동일하게 CR을 적용한 다른 Case들이 최적해를 찾지 못한 점을 고려할 때, 성능 향상의 원인은 M2의 CR 규칙과 M1의 MST 규칙 간의 시너지 효과에 기인한다.
+\end{remark}
+\begin{remark}
+\noindent M2는 Job 1, 2, 4가 진입하는 초기 병목 지점이다. EDD나 MDD는 단순히 납기가 빠른 Job 4($d_4=8$)를 우선시하여, 전체 공정 경로가 가장 긴 Job 1($d_1=10$, 3단계 공정)의 투입을 지연시킨다. 반면, CR 규칙은 '남은 총 가공 시간'을 고려하므로 작업 부하가 큰 Job 1을 가장 긴급한 작업으로 식별하여 M2에 우선 투입한다. 이는 Job 1이 후속 공정인 M1으로 빠르게 이동할 수 있는 전제 조건을 형성한다.
+\end{remark}
+\begin{remark}
+\noindent M2에서 CR 규칙에 의해 Job 1이 조기 투입되더라도, M1에서 적절한 스케줄링이 이루어지지 않으면 병목 현상이 재발한다. M1에 적용된 MST 규칙은 납기뿐만 아니라 현재 시점의 slack을 기준으로 판단한다. Job 1은 납기가 Job 4보다 늦더라도 남은 공정이 많아 slack이 매우 부족한 상태다. MST는 이러한 '실질적 긴급도'를 감지하여, Job 1과 Job 4 사이의 경합을 효율적으로 중재하고 전체 흐름이 막히지 않도록 제어하였다.
+\end{remark}
+\vspace{1em}
+
+\noindent
+\begin{minipage}[t]{0.53\linewidth}
+  \vspace{0pt} 
+  \centering
+  \includegraphics[width=0.95\linewidth]{prob2.2_rule.png}
+  \captionof{figure}{(M1-SPT, M2-WMOR) 디스패칭 규칙 정의 코드}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.46\linewidth}
+  \vspace{1em}
+  앞선 분석을 통해 M2(초기병목)에서 작업 부하가 큰 J1과 J2를 초기에 투입하는 것이 Makespan 단축에 기여함을 확인하였다. \\
+  
+  이를 바탕으로 다음과 같은 디스패칭 전략을 수립하였다.
+  \begin{itemize}
+      \item[-] WMOR (M2): $(\text{잔여 가공시간} \times \text{잔여 공정 수})$를 가중치로 부여하는 규칙 WMOR를 고안하여 작업부하가 큰 작업(J1, J2)에게 높은 우선순위 부여
+      \item[-] SPT (M1): 처리 시간이 짧은 작업을 우선 처리함으로써 시스템의 흐름을 가속화
+  \end{itemize}
+\end{minipage}
+
+\vspace{2em}
+\noindent \textbf{[결론]} \, 제안한 (M1-SPT, M2-WMOR) 전략은 Makespan을 15로 단축하며 기존 Case 3보다 뛰어난 효율성을 달성하였다. 이는 M2의 WMOR 규칙이 작업 부하가 큰 핵심 작업을 조기에 투입하여 시스템 병목을 선제적으로 해소했기 때문이다. 비록 처리 효율을 극대화하는 과정에서 최대 지연 시간은 소폭 증가했으나, 전체 지연 작업 수는 오히려 감소하였다. 
+\vspace{1.5em}
+
+\begin{table}[ht!] \centering
+  \resizebox{0.85\textwidth}{!}{
+  \begin{tabular}{@{}ccccl@{}}
+  \toprule
+  Makespan          & Mean Completion Time & Mean Flow Time     & Max Flow Time     & \multicolumn{1}{c}{Mean Lateness Time} \\ \midrule
+  15                & 12.75                & 12.75              & 15                & \multicolumn{1}{c}{1.25}               \\ \midrule
+  Max Lateness Time & Mean Tardiness Time  & Max Tardiness Time & Number of Overdue &                                        \\ \midrule
+  6                 & 2.75                 & 6                  & 2                 &                                        \\ \bottomrule
+  \end{tabular}
+  }
+\end{table}
+\vspace{-1em}
+\begin{figure}[ht!]
+  \centering 
+  \includegraphics[width=0.95\textwidth]{prob2.2_gantt.png}
+  \caption{(M1-SPT, M2-WMOR) 적용 스케줄 및 성능지표}
+\end{figure}
+
+\end{document}

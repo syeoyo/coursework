@@ -1,0 +1,208 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=0.7in}
+\usepackage{mathtools}
+\usepackage{lscape}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{multicol}
+\usepackage{booktabs}
+
+\usepackage{kotex}
+\usepackage{fontspec}
+\setmainfont{IBMPlexSans}[
+    Path = ./IBMPlexSans/,
+    Extension = .ttf,
+    UprightFont = *-Regular,
+    BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+    BoldItalicFont = *-BoldItalic
+]
+
+\usepackage{amsthm}
+\usepackage[most]{tcolorbox}
+
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\vspace{1ex}\pushQED{\qed}\normalfont
+  \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\hskip\labelsep\bfseries #1\@addpunct{.}]%
+}{%
+  \popQED\endtrivlist\@endpefalse
+  \addvspace{1ex}%
+}
+\makeatother
+
+% ---- Custom style for unnumbered, clean theorem box ----
+\tcbset{
+  myboxstyle/.style={
+    colback=gray!10,       % 회색 배경
+    colframe=gray!60,      % 테두리 색
+    boxrule=0.4pt,         % 테두리 두께
+    arc=2mm,               % 모서리 둥글게
+    left=6pt, right=6pt, top=6pt, bottom=6pt,
+  }
+}
+
+\newtcolorbox{stabilitybox}[1]{myboxstyle, title=\textbf{#1}, fonttitle=\bfseries\color{black}}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem{remark}{Remark}
+
+\newcounter{remarkctr}
+\renewenvironment{remark}[1][]{%
+  \refstepcounter{remarkctr}% 카운터 증가
+  \par\vspace{1ex}\noindent
+  \textbf{Remark~\theremarkctr.}%
+  \ifx#1\empty\else\ \textbf{#1}\fi\par
+}{\vspace{1ex}}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE\bfseries IIE8560 Final Exam \par}
+    \vspace{1em}
+    {\large 장서현 (학번: 2025324096) \par}
+\end{center}
+\vspace{0.5em}
+
+% -------------------------------------------------------------------------------------
+\section*{문제1. Bayesian Optimization}
+비용이 큰 black-box 목적함수 $f(x)$를 최소화한다고 하자. 현재까지의 데이터 $D_t$로부터 GP surrogate의 사후분포가 각 후보점에서
+\[ f(x) \mid D_t \sim \mathcal{N}(\mu(x),\sigma^2(x)) \]
+로 주어진다고 하자. 후보점은 $x \in \{A, B, C, D\}$이며, 아래 값이 계산되어 있다. 
+\[(A: \mu=0.62, \sigma=0.05),(B: \mu=0.70, \sigma=0.30),\] 
+\[(C: \mu=0.66, \sigma=0.12),(D: \mu=0.60, \sigma=0.02)\]
+현재까지 관측된 값 중 최소값을 $y_{min}=0.58$이라 하자.
+
+\subsubsection*{(1)}
+다음의 LCB 계열 획득함수를 사용하고, 다음 평가점은 $\arg\max_x \alpha_{LCB}(x)$로 선택한다고 하자.
+\[\alpha_{LCB}(x)=-\mu(x)+\beta \cdot \sigma(x)\]
+$\beta=0.1$일 때와 $\beta=0.5$일 때 각각 $\alpha_{LCB}(A), \alpha_{LCB}(B), \alpha_{LCB}(C), \alpha_{LCB}(D)$를 계산하고, 선택되는 점을 쓰시오. 또한 $\beta$변화가 선택에 미친 영향을 1$\sim$2문장으로 설명하시오.
+
+\paragraph{1) $\beta = 0.1$ 일 때:}
+\begin{itemize}
+    \item $\alpha_{LCB}(A) = -0.62 + (0.1 \times 0.05) = -0.615$
+    \item $\alpha_{LCB}(B) = -0.70 + (0.1 \times 0.30) = -0.67$
+    \item $\alpha_{LCB}(C) = -0.66 + (0.1 \times 0.12) = -0.648$
+    \item $\alpha_{LCB}(D) = -0.60 + (0.1 \times 0.02) = -0.598$
+\end{itemize}
+\textbf{선택되는 점:} 값이 가장 큰 \textbf{D (-0.598)}이다.
+
+\paragraph{2) $\beta = 0.5$ 일 때:}
+\begin{itemize}
+    \item $\alpha_{LCB}(A) = -0.62 + (0.5 \times 0.05) = -0.595$
+    \item $\alpha_{LCB}(B) = -0.70 + (0.5 \times 0.30) = -0.55$
+    \item $\alpha_{LCB}(C) = -0.66 + (0.5 \times 0.12) = -0.60$
+    \item $\alpha_{LCB}(D) = -0.60 + (0.5 \times 0.02) = -0.59$
+\end{itemize}
+\textbf{선택되는 점:} 값이 가장 큰 \textbf{B (-0.55)}이다.
+
+\paragraph{3) $\beta$ 변화가 선택에 미친 영향:}
+$\beta$가 커질수록 불확실성($\sigma$)에 부여하는 가중치가 커진다. 따라서 탐색(Exploration)의 비중이 높아져, 평균값($\mu$)은 높지만 표준편차($\sigma$)가 큰 지점인 B가 선택되도록 유도한다.
+
+\subsubsection*{(2)}
+Expected Improvement(EI)을 최소화 문제에 대해
+\[EI(x)=\mathbb{E}[\max(0, y_{min}-Y)], Y \sim \mathcal{N}(\mu(x), \sigma^2(x))\]
+로 정의한다. 표준정규의 CDF/PDF를 $\Phi(\cdot), \phi(\cdot)$라 하면, 표준화 $z=\frac{y_{min}-\mu(x)}{\sigma(x)}$를 이용하여 EI는 다음과 같은 closed-form으로 유도할 수 있다:
+\[EI(x)=(y_{min}-\mu(x))\Phi(z)+\sigma(x)\phi(z), z=\frac{y_{min}-\mu(x)}{\sigma(x)}\]
+위 식을 사용하여 $EI(A),EI(B),EI(C),EI(D)$를 계산하고, EI가 가장 큰 점을 선택하시오. 계산에 필요한 표준정규 값은 아래를 사용하시오.
+\[z=−0.8, \Phi(z)=0.2119, \phi(z)=0.2897\] 
+\[z=−0.4, \Phi(z)=0.3446, \phi(z)=0.3683 \]
+\[z=−0.667, \Phi(z)=0.2525, \phi(z)=0.3180\] 
+\[z=−1.0, \Phi(z)=0.1587, \phi(z)=0.2420\]
+
+\paragraph{EI 계산}
+\begin{enumerate}
+  \item \textbf{점 A:} $z = \frac{0.58 - 0.62}{0.05} = -0.8$ 
+  \item[] $EI(A) = (-0.04)(0.2119) + (0.05)(0.2897) = -0.008476 + 0.014485 = \mathbf{0.006009}$
+  
+  \item \textbf{점 B:} $z = \frac{0.58 - 0.70}{0.30} = -0.4$
+  \item[] $EI(B) = (-0.12)(0.3446) + (0.30)(0.3683) = -0.041352 + 0.11049 = \mathbf{0.069138}$
+  
+  \item \textbf{점 C:} $z = \frac{0.58 - 0.66}{0.12} \approx -0.667$
+  \item[] $EI(C) = (-0.08)(0.2525) + (0.12)(0.3180) = -0.0202 + 0.03816 = \mathbf{0.01796}$
+  
+  \item \textbf{점 D:} $z = \frac{0.58 - 0.60}{0.02} = -1.0$
+  \item[] $EI(D) = (-0.02)(0.1587) + (0.02)(0.2420) = -0.003174 + 0.00484 = \mathbf{0.001666}$
+\end{enumerate}
+
+\noindent \textbf{선택되는 점:} EI 값이 가장 큰 \textbf{B (0.069138)}이다.
+
+\subsubsection*{(3)} 
+Bayesian Optimization이 실제로 사용되는 사례를 최소한 4줄 이상으로 서술하시오. 단순히 “하이퍼파라미터 튜닝”이라고만 쓰지 말고, 왜 BO가 적합한지(예: 평가 비용이 큼, 실험 예산이 제한됨, 함수가 black-box임, 병렬 실험 가능 여부 등)를 함께 설명하시오.
+\paragraph{사례}
+Bayesian Optimization(BO)은 신약 개발과 같이 평가 비용이 극심한 분야에서 활용되기 적합하다. 특정 화합물 조성에 대하여 약물의 효능, 수율, 혹은 선택도 등의 성능을 측정해야 하는데, 실제 실험실에서 화합물을 합성하고 분석하는 과정은 막대한 비용과 시간이 소요되어 전체 실험 예산이 제한될 수밖에 없다. 또한, 가능한 조성의 조합이 방대하여 전수조사가 불가능하며, 복잡한 화학적 상호작용으로 인해 시스템의 내부를 미분 가능한 수식으로 표현할 수 없는 Black-box 특성을 가진다. 이러한 환경에서는 gradient 정보가 부재하므로 전통적인 최적화 기법을 적용하기 어렵다. BO는 확률적 대리 모델을 통해 목적 함수의 불확실성을 모델링하고, 적은 횟수의 실험만으로도 유망한 영역을 효율적으로 탐색하여 최적의 조성을 찾아내기에 매우 적합한 방법론이다.
+
+% -------------------------------------------------------------------------------------
+
+\section*{문제2. Gaussian Processes}
+1차원 Gaussian Process(GP) regression을 고려하자. 평균함수는 $m(x)=0$이고, 관측은
+\[ y_n = f(x_n)+\epsilon_n, \epsilon_n \sim \mathcal{N}(0, \sigma_y^2)\]
+를 따른다고 하자. 학습 데이터는 $N=2$개이며,
+\[ \mathbf{y}= \begin{bmatrix} 1 \\ -1\end{bmatrix}, K_{X, X}=\begin{bmatrix} 1 & 0.5\\ 0.5 & 1\end{bmatrix}, \sigma_y^2=0.1\]
+이다. 테스트 입력 $x^*$에 대해
+\[ k^* = K_{X, x^*} = \begin{bmatrix} 0.8 \\ 0.2\end{bmatrix}, k^{**} = K(x^*, x^*)=1\]
+가 주어졌다고 하자. 또한 $K_\sigma=K_{X, X}+\sigma_y^2I$로 둔다.
+
+\subsubsection*{(1)}
+$p(f^* \mid x^*, D)$의 사후예측분포가 정규분포임을 이용하여, 평균 $\mu^*$와 분산 $(\sigma^*)^2$를 행렬식으로 먼저 쓰고, 위 숫자를 대입하여 $\mu^*$와 $(\sigma^*)^2$를 계산하시오.
+\paragraph{행렬 형태}
+\begin{align*}
+  \mu^* &= (k^*)^T (K_{X,X} + \sigma_y^2 I)^{-1} y \\
+  (\sigma^*)^2 &= k^{**} - (k^*)^T (K_{X,X} + \sigma_y^2 I)^{-1} k^*
+\end{align*}
+\paragraph{1) $K_\sigma = K_{X,X} + \sigma_y^2 I$ 및 역행렬 계산:}
+\[
+K_\sigma = \begin{bmatrix} 1 & 0.5 \\ 0.5 & 1 \end{bmatrix} + \begin{bmatrix} 0.1 & 0 \\ 0 & 0.1 \end{bmatrix} = \begin{bmatrix} 1.1 & 0.5 \\ 0.5 & 1.1 \end{bmatrix}
+\]
+행렬식 $|K_\sigma| = (1.1 \times 1.1) - (0.5 \times 0.5) = 1.21 - 0.25 = 0.96$ 이므로, 역행렬은 다음과 같다:
+\[
+K_\sigma^{-1} = \frac{1}{0.96} \begin{bmatrix} 1.1 & -0.5 \\ -0.5 & 1.1 \end{bmatrix}
+\]
+
+\paragraph{2) 평균 $\mu^*$ 계산:}
+\begin{align*}
+    \mu^* &= \begin{bmatrix} 0.8 & 0.2 \end{bmatrix} \frac{1}{0.96} \begin{bmatrix} 1.1 & -0.5 \\ -0.5 & 1.1 \end{bmatrix} \begin{bmatrix} 1 \\ -1 \end{bmatrix} \\
+    &= \frac{1}{0.96} \begin{bmatrix} 0.8 & 0.2 \end{bmatrix} \begin{bmatrix} 1.1 \times 1 + (-0.5) \times (-1) \\ (-0.5)\times 1 + 1.1 \times (-1) \end{bmatrix} \\
+    &= \frac{1}{0.96} \begin{bmatrix} 0.8 & 0.2 \end{bmatrix} \begin{bmatrix} 1.6 \\ -1.6 \end{bmatrix} = \frac{1.28 - 0.32}{0.96} = \frac{0.96}{0.96} = \mathbf{1}
+\end{align*}
+
+\paragraph{3) 분산 $(\sigma^*)^2$ 계산:}
+\begin{align*}
+    (\sigma^*)^2 &= 1 - \begin{bmatrix} 0.8 & 0.2 \end{bmatrix} \frac{1}{0.96} \begin{bmatrix} 1.1 & -0.5 \\ -0.5 & 1.1 \end{bmatrix} \begin{bmatrix} 0.8 \\ 0.2 \end{bmatrix} \\
+    &= 1 - \frac{1}{0.96} \begin{bmatrix} 0.8 & 0.2 \end{bmatrix} \begin{bmatrix} 0.78 \\ -0.18 \end{bmatrix} \\
+    &= 1 - \frac{0.624 - 0.036}{0.96} = 1 - \frac{0.588}{0.96} = 1 - 0.6125 = \mathbf{0.3875}
+\end{align*}
+
+\subsubsection*{(2)}
+$\sigma^2_y \to 0$인 경우와 $\sigma^2_y$가 매우 큰 경우를 비교하여, (1)에서의 $\mu^*$와 $(\sigma^*)^2$가 직관적으로 어떻게 변하는지 설명하시오.
+\paragraph{$\mu^*$와 $(\sigma^*)^2$의 변화}
+\begin{itemize}
+  \item $\sigma_y^2 \to 0$ 인 경우: 관측치에 노이즈가 없다고 판단하므로, 모델은 학습 데이터를 더 interpolate하려고 한다. 이에 따라 예측 평균 $\mu^*$는 관측값에 가깝게 형성되고, 학습점 근처에서 예측 분산 $(\sigma^*)^2$는 매우 작아져 확실성이 높아진다.
+  \item $\sigma_y^2$ 가 매우 큰 경우: 관측치를 신뢰할 수 없는 노이즈로 간주하기에, 이 경우 사후분포는 데이터의 영향을 거의 받지 않고 사전분포(Prior)로 회귀한다. 따라서 평균 $\mu^*$는 사전 평균인 0에 가까워지고, 분산 $(\sigma^*)^2$는 사전 분산인 $k^{**}=1$에 가까워진다.
+\end{itemize}
+
+\subsubsection*{(3)}
+Gaussian Process(GP) regression 에서 학습 데이터 개수 $N$이 커질 때와 입력 feature 차원 $d$가 커질 때 계산량이 어떻게 되는지 설명하시오.
+\paragraph{계산복잡도}
+\begin{itemize}
+    \item 학습 데이터 개수 $N$: $K_\sigma$ 행렬의 역행렬 계산 또는 Cholesky 분해가 필요하므로 $O(N^3)$의 계산량이 소요된다. 데이터가 커질수록 계산 비용이 cubic으로 증가된다는 뜻이다.
+    \item 입력 feature 차원 $d$: 커널 행렬 $K$를 구성할 때 각 원소마다 $d$차원 벡터 간의 거리 계산이 필요하므로 $O(dN^2)$의 계산량이 소요된다. 즉, 차원에 대해서는 선형적으로 증가한다.
+\end{itemize}
+
+% -------------------------------------------------------------------------------------
+\vspace{\bigskip}
+\section*{문제3. Kevin Murphy, \textit{Probabilistic Machine Learning Advanced Topics}}
+
+15.3$\sim$15.5 Generalized Linear Models 관련 PPT -- 별도의 pdf로 첨부
+
+    
+\end{document}

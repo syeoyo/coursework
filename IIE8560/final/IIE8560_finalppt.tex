@@ -1,0 +1,529 @@
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+\documentclass[xcolor=dvipsnames,t,9pt]{beamer}
+%\documentclass[aspectratio=169,xcolor=dvipsnames,t,9pt]{beamer} %for 16:9 ratio slide
+\usetheme{Symply}
+
+\usepackage{hyperref}
+\usepackage{graphicx} 
+\usepackage{booktabs} 
+\usepackage{bookmark} 
+\usepackage{multirow}
+\urlstyle{same}
+\usepackage{appendixnumberbeamer}
+
+\setbeamertemplate{bibliography item}{[\arabic{enumiv}]}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE FOR RESEARCH PRESENTATION
+%----------------------------------------------------------------------------------------
+
+\title{15.3-15.5 Generalized Linear Models}
+\subtitle{{\normalsize
+Reference: Kevin P. Murphy, \textit{Probabilistic Machine Learning: Advanced Topics}, MIT Press, 2023.
+}}
+
+\author[장서현 $|$]{\bigskip \textbf{장서현 (seohyun.jang@yonsei.ac.kr)}\inst{1}}
+\institute[연세대학교 산업공학과] 
+{
+  \inst{1}\textbf{SY}stems \textbf{M}odeling and \textbf{P}rogramming \textbf{L}ab \\Department of Industrial Engineering, \textbf{Y}onsei University - \textbf{SYMPLY} \\
+  (\url{https://symply.yonsei.ac.kr/})
+}  % set short institute for department and institute in footline 
+\date[IIE8560 확률모형 및 베이지안추론 $|$]
+{
+    IIE8560 확률모형 및 베이지안추론 \\\bigskip
+    % \centerline{\includegraphics[width=0.4\textwidth]{logo_text.png}}
+} % set shortdate for conference title in footline
+
+
+%----------------------------------------------------------------------------------------
+%   기존 폰트 설정 부분
+%----------------------------------------------------------------------------------------
+% \usepackage[T1]{fontenc}
+% \usepackage[usefilenames,DefaultFeatures={Ligatures=Common}]{plex-otf} %
+% \renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+
+% \usepackage[unfonts]{kotex}
+% \xetexkofontregime{latin}[puncts=prevfont, colons=prevfont, cjksymbols=hangul]
+% \setmainhangulfont{NanumSquare}
+% \setsanshangulfont{NanumSquare}
+% \setmonohangulfont{NanumSquare}
+
+%NanumGothic, NanumSquare, Noto Sans CJK KR
+
+%----------------------------------------------------------------------------------------
+%   다른 방식의 폰트 설정 부분
+%----------------------------------------------------------------------------------------
+\usepackage{kotex}
+\usepackage{fontspec}
+\setsansfont{IBMPlexSans}[
+    Path=./IBMPlexSans/,
+    Extension = .ttf,
+    UprightFont=*-Light,
+    BoldFont=*-Medium,
+    ItalicFont=*-LightItalic,
+    BoldItalicFont=*-MediumItalic,
+    ]
+% Light and Medium from IBMPlexSansKR for both English and Korean
+% LightItalic and MediumIntalic from IBMPlexSans for only English
+
+% \usepackage{kotex}
+% \usepackage{fontspec}
+% \setsansfont{NotoSansKR}[
+%     Path=./NotoSansKR/,
+%     Extension = .ttf,
+%     UprightFont=*-Light,
+%     BoldFont=*-Light,
+%     % ItalicFont=*-Italic,
+%     % BoldItalicFont=*-BoldItalic,
+%     ]
+
+
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+{
+\setbeamertemplate{headline}{} % no headline on title page
+\setbeamertemplate{footline}{} % no footline on title page
+\begin{frame}[noframenumbering] % no page count on title page
+    % Print the title page as the first slide
+    \titlepage
+\end{frame}
+}
+
+% {
+% \setbeamertemplate{headline}{} % no headline on title page
+% \setbeamertemplate{footline}{} % no footline on title page
+% \begin{frame}{목차} % no page count on title page
+    % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+%     \tableofcontents
+% \end{frame}
+% % }
+
+%------------------------------------------------
+
+\begin{frame}{Introduction \& Motivation}
+    \textbf{Motivation: 왜 GLM이 필요한가?}
+    \begin{itemize}
+        \item \textbf{Non-Gaussian Data}: 실제 데이터는 \textbf{Binary}(0/1)나 \textbf{Counts}(횟수)처럼 정규분포를 따르지 않는 경우가 많음
+        \item \textbf{Range Constraints}: 기존 \textbf{Linear model}은 예측값이 $(-\infty, \infty)$ 범위를 가져서, 확률($0 \sim 1$)이나 횟수(양수)를 예측할 때 논리적 오류가 발생
+        \item \textbf{Mean-Variance Relationship}: 평균이 커지면 분산도 변하는 \textbf{Heteroscedasticity} 특성을 \textbf{Variance function}을 통해 모델에 반영 가능
+    \end{itemize}
+
+    \vspace{\baselineskip}
+
+    \textbf{Solution: GLM -- 선형 모델의 확률적 확장}
+    \begin{itemize}
+        \item \textbf{Generalization of Linear Regression}: 선형 회귀가 가진 `가우시안 분포'와 `항등 연결(Identity Link)' 제약을 해제하여 선형 모델의 틀을 유지
+        \item \textbf{Unified Framework}: 상이한 특성을 가진 다양한 \textbf{Likelihood}들을 하나의 체계적인 최적화 루틴 안에서 통합적으로 다룸
+        \item \textbf{Statistical Rigor}: 데이터의 실제 물리적/통계적 특성에 부합하는 확률 분포를 직접 선택함으로써 모델의 타당성을 확보
+        \item 확장 사례: Logistic regression, Probit regression, Multilevel (hierarchical) GLMs
+    \end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Logistic Regression: Model Specification (1/3)}
+    \textbf{1. Binary Logistic Regression}: $y \in \{0, 1\}$인 이진 분류 문제에 사용
+    \begin{itemize}
+            \item[] \vspace{-1em}
+            \[ p(y \vert x ; \theta) = \text{Ber}(y \vert \sigma(w^\top x + b)), \quad \sigma(a) \triangleq \frac{1}{1+e^{-a}}\]
+            - $\sigma(\cdot)$은 sigmoid function으로, 선형 결과값을 $[0, 1]$ 확률값으로 변환
+            \[ \small
+            \log p(\mathcal{D}\mid \theta)
+            = \log \prod_{n=1}^{N} \mu_n^{y_n}(1-\mu_n)^{1-y_n}
+            = \sum_{n=1}^{N} \left[ y_n \log \mu_n + (1-y_n)\log(1-\mu_n) \right]
+            \]
+            \item e.g., 환자의 건강 지표($x$)를 입력받아 특정 질병의 유무($y$)를 예측하는 의료 진단 모델
+        \end{itemize}
+        \vfill
+        \textbf{2. Multinomial Logistic Regression}: $y_n \in \{1, \dots, C\}$인 다중 클래스 분류 문제에 사용
+        \begin{itemize}
+            \item[] \vspace{-1.5em}
+            \[ p(y \vert x ; \theta) = \text{Cat}(y \vert \text{softmax}(Wx+b)), \quad \text{softmax}(a) \triangleq \begin{bmatrix} \frac{e^{a_1}}{\sum_{c'=1}^C e^{a_{c'}}}, \dots, \frac{e^{a_C}}{\sum_{c'=1}^C e^{a_{c'}}}\end{bmatrix} \]
+            - Softmax 함수는 선형 결과값을 각 클래스에 대한 확률값으로 변환
+            \[ \small
+            \log p(\mathcal{D}\mid \theta)
+            = \log \prod_{n=1}^{N} \prod_{c=1}^{C} \mu_{nc}^{y_{nc}}
+            = \sum_{n=1}^{N} \sum_{c=1}^{C} y_{nc} \log \mu_{nc}
+            \]
+            \item e.g., MNIST에서 입력 이미지($x$)를 0부터 9까지의 클래스($y$) 중 하나로 분류
+        \end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Logistic Regression: Dealing with Class Imbalance (2/3)}
+    \vspace{-0.5em}
+    \textbf{1. Class Imbalance}
+    \begin{itemize}
+        \item 특정 클래스의 샘플 수가 현저히 적은 경우, 모델이 Majority class에 편향되어 전체 정확도는 높으나 Minority class 재현율이 급격히 떨어짐
+        \item \textbf{Balanced Error Rate (BER)}: 불균형한 데이터셋의 공정한 평가를 위해 클래스별 에러율의 산술 평균을 사용
+        \[ \text{BER} = \frac{1}{C} \sum_{c=1}^{C} \frac{1}{N_c} \sum_{n:y_n=c} \mathbb{I}(\hat{y}_n \neq c) \]
+    \end{itemize}
+
+    \textbf{2. Logit Adjustment}
+    \begin{itemize}
+        \item MLE는 0–1 손실을 최소화하도록 설계되어 있어, 다수 클래스에 의해 지배되는 경향
+        \item Logit $f_y(x)$에 클래스 Prior $\pi_c$를 반영하여 \textbf{결정 경계(decision boundary)를 보정}
+        \[
+        \hat{y}(x)
+        = \arg\max_{y \in \mathcal{Y}} \; f_y(x) - \tau \log \pi_y
+        \]
+        \item Logit-Adjusted Loss: 학습 시 Softmax Cross-Entropy에 logit adjustment를 반영
+        \[
+        \ell(y, f(x))
+        = - \log
+        \frac{e^{f_y(x) + \tau \log \pi_y}}
+        {\sum_{y'=1}^{C} e^{f_{y'}(x) + \tau \log \pi_{y'}}}
+        \]
+        \item 데이터 리샘플링 없이도 Fisher consistency를 유지하며 class imbalance 문제 해결
+    \end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Logistic Regression: MCMC-based Posterior Prediction (3/3)}
+    \textbf{1. Goal: 파라미터 불확실성이 예측과 결정 경계에 어떻게 반영되는지}를 정량화하고자 함
+    $$ \small
+    p(y \mid x, \mathcal{D})
+    = \int p(y \mid x, w)\, p(w \mid \mathcal{D}) \, dw
+    $$ \vspace{-1em}
+    \begin{itemize}
+        \item Logistic regression에서는 $p(w\mid\mathcal{D})$가 non-Gaussian
+        \item Sigmoid/softmax로 인해 위 적분은 closed-form 해가 없음
+    \end{itemize}
+    \vspace{1em}
+    \textbf{2. Solution: Markov Chain Monte Carlo (MCMC) Inference}
+    \begin{itemize}
+        \item 사후분포 $p(w\mid\mathcal{D})$로부터 직접 샘플링
+        \[ \small
+        p(w\mid\mathcal{D})
+        \approx \frac{1}{S}\sum_{s=1}^{S}\delta(w-w^{(s)}),
+        \qquad w^{(s)} \sim p(w\mid\mathcal{D})
+        \]
+        \item 예측 분포는 샘플 평균으로 근사
+        \[ \small
+        p(y=1\mid x,\mathcal{D})
+        \approx \frac{1}{S}\sum_{s=1}^{S}
+        \sigma\!\left((w^{(s)})^\top x\right)
+        \]
+        \item MCMC는 사후분포의 \textbf{전체 형태}와 \textbf{불확실성}을 반영할 수 있으며, 결정 경계의 위치뿐 아니라 \textbf{방향과 변동성}까지 표현 가능
+    \end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Probit Regression: Latent Variable Interpretation (1/3)}
+
+    \textbf{Key Idea}
+    \begin{itemize}
+        \item Probit regression은 logistic regression과 유사하지만, sigmoid 대신 \textbf{Gaussian CDF}를 사용
+        \[
+        \mu_n = \Phi(a_n), \qquad a_n = w^\top x_n
+        \]
+        \item 이에 대응하는 link function은
+        \[
+            \text{(Probit Link)} \quad a_n = \Phi^{-1}(\mu_n)
+        \]
+    \end{itemize}
+    
+    \medskip
+    \textbf{Latent Variable Interpretation}
+    \begin{itemize}
+        \item 관측되지 않는 잠재 변수(latent variable)를 가정
+        \[
+        z_n = w^\top x_n + \varepsilon_n, 
+        \qquad \varepsilon_n \sim \mathcal{N}(0,1)
+        \]
+        \item 출력은 잠재 변수의 부호로 결정
+        \[
+        y_n = \mathbb{I}(z_n \ge 0)
+        \]
+    \end{itemize}
+    
+    \medskip
+    \textbf{Marginalization}
+    \begin{itemize}
+        \item 잠재 변수를 적분하면 probit likelihood를 회복
+        \[
+        p(y_n=1 \mid x_n, w)
+        = \int \mathbb{I}(z_n \ge 0)\mathcal{N}(z_n\mid w^\top x_n, 1)dz_n
+        = \Phi(w^\top x_n)
+        \]
+    \end{itemize}
+    
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Probit Regression: Maximum Likelihood Estimation (2/3)}
+    \textbf{1. Direct MLE using Gradient Methods}
+    \begin{itemize}
+        \item Probit likelihood는 미분 가능 → 표준 SGD / quasi-Newton 적용 가능
+        \item 단일 데이터 포인트에 대한 log-likelihood gradient:
+        \[
+        \nabla_w \log p(\tilde{y}_n \mid w^\top x_n)
+        = x_n \, \frac{\tilde{y}_n \, \phi(\mu_n)}{\Phi(\tilde{y}_n \mu_n)},
+        \quad \mu_n = w^\top x_n
+        \]
+    \end{itemize}
+\vfill
+    \textbf{2. EM Algorithm via Latent Variable Interpretation}
+    \begin{itemize}
+        \item \textbf{E-step}: $z_n$의 사후분포는 \textbf{truncated Gaussian}
+        \[
+        p(z_n \mid y_n, x_n, w)
+        =
+        \begin{cases}
+        \mathcal{N}(w^\top x_n, 1)\; \mathbb{I}(z_n>0), & y_n=1 \\
+        \mathcal{N}(w^\top x_n, 1)\; \mathbb{I}(z_n<0), & y_n=0
+        \end{cases}
+        \]
+        \item \textbf{M-step}: $\mu = \mathbb{E}[z_n]$을 타깃으로 하는 ridge regression
+        \[
+        \hat{w}=\left(V_0^{-1}+X^{\top}X\right)^{-1}X^{\top}\mu
+        \]
+        \item EM은 구조적으로 단순하지만 수렴이 느릴 수 있음. 실제로는 SGD / BFGS가 더 빠른 경우가 많음.
+    \end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Probit Regression: Beyond Binary Outcomes (3/3)}
+\vspace{-0.3em}
+    \textbf{Why Probit is Easily Extendable?} \, Probit regression은 \textbf{latent variable + threshold} 구조를 가지며, 출력 공간의 구조(순서 유무)에 따라 자연스럽게 확장 가능 \\
+    \vspace{0.5em}
+    \textbf{1. Ordinal Probit Regression}
+    \begin{itemize}
+        \item 출력 클래스가 \textbf{순서를 가지는 경우} (e.g., low / medium / high, 만족도 점수, 신용 등급)
+        \item 잠재 변수 $z_n$를 여러 임계값으로 분할
+        \[
+        y_n = j \quad \text{if} \quad \gamma_{j-1} < z_n \le \gamma_j
+        \]
+        \item 임계값은 정렬 제약을 만족해야 함:
+        \[
+        -\infty = \gamma_0 \le \gamma_1 \le \cdots \le \gamma_C = \infty
+        \]
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{2. Multinomial Probit Regression}
+    \begin{itemize}
+        \item 출력 클래스가 \textbf{순서 없는 범주형}인 경우 (e.g., 교통수단 선택, 제품 카테고리, 정치 성향)
+        \item 클래스별 latent score를 정의
+        \[
+        z_{nc} = w_c^\top x_n + \varepsilon_{nc},
+        \qquad \varepsilon \sim \mathcal{N}(0, R)
+        \]
+        \item 가장 큰 latent score를 갖는 클래스를 선택
+        \[
+        y_n = \arg\max_c z_{nc}
+        \]
+        \item 클래스 간 \textbf{상관 구조}를 명시적으로 모델링 가능
+    \end{itemize}
+    
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Multilevel (Hierarchical) GLMs}
+
+    \textbf{Motivation} \, 여러 개의 관련된 데이터(그룹)이 존재 (e.g., 병원별 환자 데이터, 학교별 성적)\\
+    \vspace{0.5em}
+    \textbf{Three Modeling Strategies}
+    \begin{enumerate}
+        \item \textbf{No pooling}: 그룹별로 독립적인 모델 학습 \(\rightarrow\) 데이터가 적은 그룹에서 overfitting
+        \item \textbf{Complete pooling}: 모든 데이터를 합쳐 하나의 모델 학습 \(\rightarrow\) 그룹 간 차이를 무시하여 underfitting
+        \item \textbf{Partial pooling (Hierarchical model)}:
+        그룹별 파라미터를 공유된 prior로 연결
+    \end{enumerate}
+    \vspace{0.3em}
+    \textbf{Hierarchical GLM Formulation}
+    \[
+    p(\theta^{0:J}, \mathcal{D})
+    = p(\theta^0)
+    \prod_{j=1}^{J}
+    \left[
+        p(\theta^j \mid \theta^0)
+        \prod_{n=1}^{N_j}
+        p\!\left(y_n^j \mid x_n^j, \theta^j\right)
+    \right]
+    \] \vspace{-0.3em}
+    \begin{itemize}
+        \item 각 그룹 $j$는 고유한 파라미터 $\theta^j$를 가지며 그룹 파라미터들은 공통 상위 prior로부터 생성
+        \[
+        \theta^j \sim p(\theta^j \mid \theta^0), \qquad \theta^0 \sim p(\theta^0)
+        \]
+        \item 데이터가 적은 그룹에 대해 \textbf{shrinkage}를 유도하고, 그룹 간 정보 공유를 통해 \textbf{일반화 성능을 향상}시키며, Bayesian 추론으로 \textbf{불확실성을 정량화}
+    \end{itemize}
+    
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Generalized Linear Mixed Models (GLMMs)}
+    \vspace{-0.3em}
+    \textbf{Why GLMMs?}
+    \begin{itemize}
+        \item 표준 GLM이 포착하지 못하는 \textbf{그룹 내 상관 구조와 의존성}을 모델링하기 위함
+        \item 각 그룹은 고유한 효과를 가지되, 공통 구조를 공유하는 \textbf{partial pooling} 설정
+        \item 이를 위해 그룹별 파라미터에 \textbf{Gaussian prior}를 가정
+        \[
+        \theta^j \mid \theta^0 \sim \mathcal{N}(\theta^0, \Sigma)
+        \]
+        \item GLM likelihood와 결합하면 \textbf{Generalized Linear Mixed Model (GLMM)}
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{Model Formulation}
+    \begin{itemize}
+        \item 선형 예측자는 고정 효과와 랜덤 효과의 합으로 표현
+        \[
+        \eta_n
+        = x_n^\top \theta^j
+        = x_n^\top(\theta^0 + \varepsilon^j)
+        = x_n^\top \theta^0 + x_n^\top \varepsilon^j
+        \]
+        \item 링크 함수 $\ell(\cdot)$를 통해 관측값 생성
+        \[
+        p(y_n \mid x_n, g_n=j)
+        = p\bigl(y_n \mid \ell(\eta_n)\bigr)
+        \]
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{Fixed vs Random Effects}
+    \begin{itemize}
+        \item \textbf{Fixed effects} $\theta^0$: 모든 그룹에 공통적인 전역 효과
+        \item \textbf{Random effects} $\varepsilon^j \sim \mathcal{N}(0,\Sigma)$:
+        그룹별 편차(idiosyncratic deviations)
+    \end{itemize}
+    
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{응용 사례 (1/3): Political Preference Modeling}
+
+    \textbf{Reference Paper} \, Gelman et al. (2006), \emph{Multilevel (Hierarchical) Modeling: What It Can and Cannot Do}, Annals of Applied Statistics
+    \vfill
+    \textbf{Problem Setting}
+    \begin{itemize}
+        \item 개인의 정책 찬성 여부를 예측
+        \[
+        y_{ij} \in \{0,1\} \quad \text{: 주(state) } j \text{에 속한 개인 } i
+        \]
+        \item 입력 변수: 나이, 소득, 교육 수준 등 개인 특성
+    \end{itemize}
+    \vfill
+    \textbf{Challenges}
+    \begin{itemize}
+        \item 반응 변수는 \textbf{이진(binary)} $\Rightarrow$ Gaussian 가정 부적절
+        \item 주(state)별 정치적 성향 차이 존재
+        \item 일부 주는 표본 수가 매우 적음
+    \end{itemize}
+    \vfill
+    \textbf{Modeling Implication}
+    \begin{itemize}
+        \item Binary outcome $\Rightarrow$ \textbf{Logistic regression}
+        \item 그룹 간 이질성 $\Rightarrow$ \textbf{Multilevel (hierarchical) structure}
+    \end{itemize}
+    
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{응용 사례 (2/3): Multilevel Logistic GLMM}
+
+    \textbf{Model Specification}
+    \begin{itemize}
+        \item Logit 링크를 사용하는 이진 GLM
+        \[
+        \text{logit}\, p(y_{ij}=1)
+        = x_{ij}^\top \theta^0 + \varepsilon^j
+        \]
+        \item 주(state)별 랜덤 효과
+        \[
+        \varepsilon^j \sim \mathcal{N}(0, \Sigma)
+        \]
+    \end{itemize}
+    
+    \medskip
+    \textbf{Model Type}
+    \begin{itemize}
+        \item Likelihood: Bernoulli
+        \item Link function: Logit
+        \item Structure: \textbf{Multilevel GLM / Logistic GLMM}
+    \end{itemize}
+    
+    \medskip
+    \textbf{Inference}
+    \begin{itemize}
+        \item Bayesian 추론 + MCMC 사용
+        \item 데이터가 적은 주에 대해 \textbf{shrinkage} 효과
+        \item 그룹 간 정보 공유를 통한 안정적 추정
+    \end{itemize}
+    
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{응용 사례 (3/3): Multilevel Logistic GLMM --- Results}
+    \begin{columns}
+    \column{0.47\textwidth}
+        \textbf{Key Results}
+        \begin{itemize}
+            \item 주(state)별 랜덤 효과 추정치를 통해 정치 성향의 이질성 확인
+            \item 표본 수가 적은 주의 추정치는 전체 평균으로 \textbf{shrinkage}
+            \item 단순 logistic regression 대비 안정적인 예측 성능
+        \end{itemize}
+    \column{0.47\textwidth}
+        \textbf{Interpretation}
+        \begin{itemize}
+            \item 개인 특성 효과와 주별 효과를 분리하여 해석 가능
+            \item 불확실성이 큰 주는 posterior 분산이 크게 추정됨
+            \item 정책 효과 분석 시 과도한 과신(overconfidence) 방지
+        \end{itemize}
+    \end{columns}
+
+    \vspace{0.7em}
+    \centering
+    \begin{figure}
+    \includegraphics[width=0.8\linewidth]{result.png} \vspace{-1em}
+    \caption{Results for Multilevel (partial pooling) Regression Lines}
+    \end{figure}
+    
+\end{frame}
+
+% {
+% \setbeamertemplate{headline}{} % no headline on title page
+% \setbeamertemplate{footline}{} % no footline on title page
+% \begin{frame}[c,noframenumbering]
+%     \bigskip\bigskip\bigskip
+%     \LARGE{\centerline{\textbf{Any Questions?}}}
+%     \bigskip
+%     {
+%         \small \centerline{장서현}\smallskip
+%         \centerline{(jangseohyun@yonsei.ac.kr)}
+%         \bigskip\bigskip\bigskip
+%         % \centerline{\includegraphics[width=0.4\textwidth]{logo_text.png}}
+%     }
+% \end{frame}
+% }
+
+% {
+% \setbeamertemplate{headline}{} % no headline on title page
+% \setbeamertemplate{footline}{} % no footline on title page
+% \begin{frame}[allowframebreaks]
+%     \frametitle{References}
+%     \bibliographystyle{ieeetr}
+%     \bibliography{references.bib}
+% \end{frame}
+% }
+
+%------------------------------------------------
+
+\end{document}
